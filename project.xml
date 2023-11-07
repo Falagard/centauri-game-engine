@@ -10,6 +10,8 @@
 
 	<haxelib name="lime" />
 	<haxelib name="babylonhx" />
+	<haxelib name="hxdaedalus" />
+	
 	<!-- <haxelib name="actuate" /> -->
 	<!-- <haxelib name="hxcpp-debug-server" /> -->
 
