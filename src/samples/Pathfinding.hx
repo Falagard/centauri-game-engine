@@ -101,13 +101,13 @@ class Pathfinding extends TurtleBase {
         //let's translate all points into positive
         if(deltaY > 0) {
             for(point in _points) {
-                point.y += deltaY;
+                point.y += deltaY + 50;
             }
         }
 
         if(deltaX > 0) {
             for(point in _points) {
-                point.x += deltaX;
+                point.x += deltaX + 50;
             }
         }
 
@@ -126,7 +126,7 @@ class Pathfinding extends TurtleBase {
 
         //Now for the pathfinding mesh
         //Add a rectangle border greater than size of current points
-        _pathMesh = RectMesh.buildRectangle(maxPoint.x + 100, maxPoint.y + 100);
+        _pathMesh = RectMesh.buildRectangle(maxPoint.x + 50, maxPoint.y + 50);
 
         //Add a constraint object
         var object:Object = new Object();
@@ -159,11 +159,17 @@ class Pathfinding extends TurtleBase {
 
         //create meshes from the edges 
         for(edge in vertsAndEdges.edges) {
+            
             pathPoints.push(new Vector3(edge.originVertex.pos.x, edge.originVertex.pos.y, 0));
             pathPoints.push(new Vector3(edge.destinationVertex.pos.x, edge.destinationVertex.pos.y, 0));            
             
             var mesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
-            
+
+            if(edge.isConstrained) {
+                mesh.color = Color3.White();
+            } else {
+                mesh.color = Color3.Blue();
+            }
 
             pathPoints = [];
         }
