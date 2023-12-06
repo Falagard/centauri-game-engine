@@ -217,4 +217,39 @@ class TurtleBase {
         _meshes.push(mesh);
     }
     
+    public function evaluateSystem() {
+
+        //loop through the characters, does not validate begin and end branches yet
+        for(i in 0..._system.length) {
+            var item = _system.charAt(i);
+
+            if(item == "F") {
+                forward(_distance);
+            } else if(item == "+") {
+                right(_turnRadius);
+            } else if(item == "-") {
+                left(_turnRadius);
+            } else if(item == "/") {
+                rollCounterClockwise(_turnRadius);
+            } else if(item == "\\") {
+                rollClockwise(_turnRadius);
+            } else if(item == "&") {
+                pitchUp(_turnRadius);
+            } else if(item == "^") {
+                pitchDown(_turnRadius);
+            }
+            else if(item == "[") {
+                beginBranch();
+            }
+            else if(item == "]") {
+                endBranch();
+            }
+            else if(item == "X" || item == "A") {
+                //no op
+            } else {
+                //everything else is interpetted as forward
+                forward(_distance);
+            }
+        }
+    }
 }

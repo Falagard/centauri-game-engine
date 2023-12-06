@@ -75,7 +75,8 @@ class MainLime extends Application {
 	override public function onPreloadComplete() {
 
 		//run the sample 
-		new samples.Turtle(scene);
+		//new samples.Turtle(scene);
+		new samples.Pathfinding(scene);
 	}
 	
 	override function onMouseDown(x:Float, y:Float, button:Int) {
