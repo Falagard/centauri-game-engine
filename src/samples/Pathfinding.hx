@@ -73,10 +73,9 @@ class Pathfinding extends TurtleBase {
         //a system built using the Turtle sample
         _system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+";
 
+        //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for pathfinding
         beginMesh();
-
         evaluateSystem();
-
         endMesh();
 
         _meshes[0].setEnabled(false); //don't draw it
@@ -98,16 +97,18 @@ class Pathfinding extends TurtleBase {
         var deltaY:Float = 0 - minPoint.y;
         var deltaX:Float = 0 - minPoint.x;
 
-        //let's translate all points into positive
+        var border:Float = 50;
+
+        //let's translate all points into positive and add a bit for a border 
         if(deltaY > 0) {
             for(point in _points) {
-                point.y += deltaY + 50;
+                point.y += deltaY + border;
             }
         }
 
         if(deltaX > 0) {
             for(point in _points) {
-                point.x += deltaX + 50;
+                point.x += deltaX + border;
             }
         }
 
@@ -126,7 +127,7 @@ class Pathfinding extends TurtleBase {
 
         //Now for the pathfinding mesh
         //Add a rectangle border greater than size of current points
-        _pathMesh = RectMesh.buildRectangle(maxPoint.x + 50, maxPoint.y + 50);
+        _pathMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
 
         //Add a constraint object
         var object:Object = new Object();
