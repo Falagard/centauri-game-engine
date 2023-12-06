@@ -1,5 +1,10 @@
 package samples;
 
+import com.babylonhx.mesh.LinesMesh;
+import haxe.display.Display.FindReferencesKind;
+import hxDaedalus.ai.trajectory.LinearPathSampler;
+import hxDaedalus.ai.PathFinder;
+import hxDaedalus.ai.EntityAI;
 import com.babylonhx.math.Vector2;
 import com.babylonhx.engine.EngineCapabilities.WEBGL_compressed_texture_s3tc;
 import com.babylonhx.utils.Keycodes;
@@ -40,8 +45,13 @@ class Pathfinding extends TurtleBase {
 
     private var _startPosition:Vector2 = Vector2.Zero();
     private var _endPosition:Vector2 = Vector2.Zero();
-    private var _pathMesh : Mesh;
-
+    private var _obstacleMesh : Mesh;
+    private var _entityAI:EntityAI;
+    private var _pathfinder:PathFinder;
+    private var _pathSampler:LinearPathSampler;
+    private var _path:Array<Float>;
+    private var _pathMesh:LinesMesh = null;
+        
 	public function new(scene:Scene) {
 
         _scene = scene;
@@ -57,8 +67,28 @@ class Pathfinding extends TurtleBase {
 		light.diffuse = Color3.FromInt(0xf68712);
 
         scene.getEngine().mouseDown.push(function(evt:PointerEvent) {
+            
+            //todo
+            //we can't just use evt.x and evt.y because they're in screen space 
+            //need to get intersection of screen x,y with plane
 
-            //switch the previous end position as the new start position and set the new end position to the mouse x and y 
+            _pathfinder.findPath(evt.x, evt.y, _path );
+
+            var pathPoints:Array<Vector3> = [];
+
+            var i = 2;
+            while (i < _path.length) {
+                pathPoints.push(new Vector3(_path[i], _path[i + 1]));
+                i += 2;
+            }
+
+            if(_pathMesh != null) {
+                _pathMesh.dispose();
+            }
+
+            _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
+			_pathMesh.color = Color3.Red();	
+			
         });
 	
         scene.getEngine().keyDown.push(function(keyCode:Int) {
@@ -127,7 +157,7 @@ class Pathfinding extends TurtleBase {
 
         //Now for the pathfinding mesh
         //Add a rectangle border greater than size of current points
-        _pathMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
+        _obstacleMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
 
         //Add a constraint object
         var object:Object = new Object();
@@ -151,20 +181,20 @@ class Pathfinding extends TurtleBase {
             prevPoint = point;
         }
 
-        _pathMesh.insertObject(object);
+        _obstacleMesh.insertObject(object);
         
         //now we're going to create a drawable mesh
-        var vertsAndEdges = _pathMesh.getVerticesAndEdges();
+        var vertsAndEdges = _obstacleMesh.getVerticesAndEdges();
 
-        var pathPoints:Array<Vector3> = [];
+        var edgePoints:Array<Vector3> = [];
 
         //create meshes from the edges 
         for(edge in vertsAndEdges.edges) {
             
-            pathPoints.push(new Vector3(edge.originVertex.pos.x, edge.originVertex.pos.y, 0));
-            pathPoints.push(new Vector3(edge.destinationVertex.pos.x, edge.destinationVertex.pos.y, 0));            
+            edgePoints.push(new Vector3(edge.originVertex.pos.x, edge.originVertex.pos.y, 0));
+            edgePoints.push(new Vector3(edge.destinationVertex.pos.x, edge.destinationVertex.pos.y, 0));            
             
-            var mesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
+            var mesh = com.babylonhx.mesh.Mesh.CreateLines("", edgePoints, _scene, false);
 
             if(edge.isConstrained) {
                 mesh.color = Color3.White();
@@ -172,12 +202,38 @@ class Pathfinding extends TurtleBase {
                 mesh.color = Color3.Blue();
             }
 
-            pathPoints = [];
+            edgePoints = [];
         }
+
+        // we need an entity
+        _entityAI = new EntityAI();
+        // set radius as size for your entity
+        _entityAI.radius = 4;
+        // set a position
+        _entityAI.x = 20;
+        _entityAI.y = 20;
+        
+        // now configure the pathfinder
+        _pathfinder = new PathFinder();
+        _pathfinder.entity = _entityAI;  // set the entity  
+        _pathfinder.mesh = _obstacleMesh;
+
+        // we need a vector to store the path
+        _path = new Array<Float>();
+        
+        // then configure the path sampler
+        _pathSampler = new LinearPathSampler();
+        _pathSampler.entity = _entityAI;
+        _pathSampler.samplingDistance = 10;
+        _pathSampler.path = _path;
         		
 		scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
             
-            _pathMesh.updateObjects();
+            _obstacleMesh.updateObjects();
+
+            if(_pathSampler.hasNext) {
+                _pathSampler.next();
+            }
 
             var dt = scene.getEngine().getDeltaTime();
             _elapsedTime += dt;
