@@ -138,6 +138,7 @@ class Pathfinding extends TurtleBase {
         //hxdaedalus allows you to insert an object with coordinations of line segments so we'll pass our points in as object.coordinates
         for(point in _points) {
             if(prevPoint == null) {
+                prevPoint = point;
                 continue;
             }
 
