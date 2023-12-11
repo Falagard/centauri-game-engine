@@ -1,5 +1,7 @@
 package samples;
 
+import com.babylonhx.math.Plane;
+import com.babylonhx.math.Matrix;
 import com.babylonhx.mesh.LinesMesh;
 import haxe.display.Display.FindReferencesKind;
 import hxDaedalus.ai.trajectory.LinearPathSampler;
@@ -57,7 +59,7 @@ class Pathfinding extends TurtleBase {
         _scene = scene;
 
 		var camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), scene);
-        //var camera = new FreeCamera("Camera", new Vector3(20, 30, -100), scene);
+        
 		camera.setPosition(new Vector3(0, 0, 400));
 		camera.attachControl();
 		camera.maxZ = 20000;		
@@ -216,6 +218,7 @@ class Pathfinding extends TurtleBase {
         });
     }
     
+    //Perform our updates
     private function onBeforeRender(scene:Scene, es:Null<EventState>) {
             
         _obstacleMesh.updateObjects();
@@ -252,23 +255,34 @@ class Pathfinding extends TurtleBase {
         //todo
         //we can't just use evt.x and evt.y because they're in screen space 
         //need to get intersection of screen x,y with plane
+        var world = Matrix.Identity();
 
-        _pathfinder.findPath(evt.x, evt.y, _path );
+        var ray = this._scene.createPickingRay(evt.x, evt.y, world);
 
-        var pathPoints:Array<Vector3> = [];
+        var plane:Plane = Plane.FromPositionAndNormal(Vector3.Zero(), Vector3.Forward());
 
-        var i = 2;
-        while (i < _path.length) {
-            pathPoints.push(new Vector3(_path[i], _path[i + 1]));
-            i += 2;
-        }
-
-        if(_pathMesh != null) {
-            _pathMesh.dispose();
-        }
-
-        _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
-        _pathMesh.color = Color3.Red();	
+        //intersect a plane 
+        var distance = ray.intersectsPlane(plane);
         
+        if(distance > Math.NEGATIVE_INFINITY)
+        {
+            var hitPos = ray.origin.add(ray.direction.multiplyByFloats(distance, distance, distance));
+            _pathfinder.findPath(hitPos.x, hitPos.y, _path );
+
+            var pathPoints:Array<Vector3> = [];
+    
+            var i = 2;
+            while (i < _path.length) {
+                pathPoints.push(new Vector3(_path[i], _path[i + 1]));
+                i += 2;
+            }
+    
+            if(_pathMesh != null) {
+                _pathMesh.dispose();
+            }
+    
+            _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
+            _pathMesh.color = Color3.Red();	
+        }
     }
 }
