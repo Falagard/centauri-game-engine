@@ -66,39 +66,23 @@ class Pathfinding extends TurtleBase {
 		var light = new HemisphericLight("hemi", new Vector3(0, 1, 0), scene);
 		light.diffuse = Color3.FromInt(0xf68712);
 
+        //handle inputs
         scene.getEngine().mouseDown.push(function(evt:PointerEvent) {
-            
-            //todo
-            //we can't just use evt.x and evt.y because they're in screen space 
-            //need to get intersection of screen x,y with plane
-
-            _pathfinder.findPath(evt.x, evt.y, _path );
-
-            var pathPoints:Array<Vector3> = [];
-
-            var i = 2;
-            while (i < _path.length) {
-                pathPoints.push(new Vector3(_path[i], _path[i + 1]));
-                i += 2;
-            }
-
-            if(_pathMesh != null) {
-                _pathMesh.dispose();
-            }
-
-            _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
-			_pathMesh.color = Color3.Red();	
-			
+            return this.onMouseDown(evt);
         });
 	
         scene.getEngine().keyDown.push(function(keyCode:Int) {
-			_keysDown[keyCode] = true;
+            return this.onKeyDown(keyCode);
 		});
 
 		scene.getEngine().keyUp.push(function(keyCode:Int) {
-            _keysDown[keyCode] = false;
-            _keysHandled[keyCode] = false;
+            return this.onKeyUp(keyCode);
 		});
+
+        //register our onBeforeRender callback
+        scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
+            this.onBeforeRender(scene, es); 
+        });
 
         //a system built using the Turtle sample
         _system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+";
@@ -226,33 +210,65 @@ class Pathfinding extends TurtleBase {
         _pathSampler.entity = _entityAI;
         _pathSampler.samplingDistance = 10;
         _pathSampler.path = _path;
-        		
-		scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
-            
-            _obstacleMesh.updateObjects();
-
-            if(_pathSampler.hasNext) {
-                _pathSampler.next();
-            }
-
-            var dt = scene.getEngine().getDeltaTime();
-            _elapsedTime += dt;
-
-            //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-            if(_elapsedTime > 300) {
-                _keysHandled = new Map();
-            }
-
-            if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
-                
-                //set pathfinding from position
-
-                _keysHandled[Keycodes.key_1] = true;
-            }
-        });
-		
+        
 		scene.getEngine().runRenderLoop(function () {
             scene.render();
         });
+    }
+    
+    private function onBeforeRender(scene:Scene, es:Null<EventState>) {
+            
+        _obstacleMesh.updateObjects();
+
+        if(_pathSampler.hasNext) {
+            _pathSampler.next();
+        }
+
+        var dt = scene.getEngine().getDeltaTime();
+        _elapsedTime += dt;
+
+        //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
+        if(_elapsedTime > 300) {
+            _keysHandled = new Map();
+        }
+
+        if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
+            
+            _keysHandled[Keycodes.key_1] = true;
+        }
+    }
+
+    private function onKeyDown(keyCode:Int) {
+        _keysDown[keyCode] = true;
+    }
+
+    private function onKeyUp(keyCode:Int) {
+        _keysDown[keyCode] = false;
+        _keysHandled[keyCode] = false;
+    }
+
+    private function onMouseDown(evt:PointerEvent) {
+            
+        //todo
+        //we can't just use evt.x and evt.y because they're in screen space 
+        //need to get intersection of screen x,y with plane
+
+        _pathfinder.findPath(evt.x, evt.y, _path );
+
+        var pathPoints:Array<Vector3> = [];
+
+        var i = 2;
+        while (i < _path.length) {
+            pathPoints.push(new Vector3(_path[i], _path[i + 1]));
+            i += 2;
+        }
+
+        if(_pathMesh != null) {
+            _pathMesh.dispose();
+        }
+
+        _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
+        _pathMesh.color = Color3.Red();	
+        
     }
 }
