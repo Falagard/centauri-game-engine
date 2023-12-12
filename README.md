@@ -74,7 +74,14 @@ We'll tell haxlib it can find the hxDaedalus directory in a folder below centaur
 
 # Install Visual Studio Code and Extensions
 
-Install Visual Studio Code and HashLink Debugger, Haxe and Lime extensions. 
+Download and install Visual Studio Code, the Lime Extension, and the Hashlink Debugger. 
+
+https://code.visualstudio.com/
+
+https://marketplace.visualstudio.com/items?itemName=openfl.lime-vscode-extension
+
+https://marketplace.visualstudio.com/items?itemName=HaxeFoundation.haxe-hl
+
 
 # Open the Project and run the first sample 
 
@@ -84,3 +91,5 @@ In the bottom left of the window, to the right of the word Lime with the setting
 
 Hit F5 to run the sample.
 
+The sample can be changed by going into MainLime.hx and changing onPreloadComplete 
+    new samples.Pathfinding(scene);
