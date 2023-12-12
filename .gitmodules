@@ -1,3 +1,6 @@
 [submodule "hxDaedalus"]
 	path = hxDaedalus
 	url = https://github.com/Falagard/hxDaedalus
+[submodule "babylonhx"]
+	path = babylonhx
+	url = https://github.com/Falagard/babylonhx
