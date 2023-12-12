@@ -54,8 +54,9 @@ class Pathfinding extends TurtleBase {
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
-        
-	public function new(scene:Scene) {
+
+    // We're going to use hxdaedalus and an obstacle that is built using turtle commands and allow an entity to move around using pathfinding 
+    public function new(scene:Scene) {
 
         _scene = scene;
 
@@ -87,7 +88,7 @@ class Pathfinding extends TurtleBase {
             this.onBeforeRender(scene, es); 
         });
 
-        //make a little triangle 
+        //make a little triangle we'll use for our entity position
         penUp();
         beginMesh();
         left(180);
@@ -103,21 +104,25 @@ class Pathfinding extends TurtleBase {
         forward(10);
         endMesh();
 
-        //grab the current mesh so it doesn't get disposed
+        //grab the current mesh so it doesn't get disposed when we call disposeMeshes()
         _arrowMesh = _meshes[0];
         _meshes = [];
 
         disposeMeshes();
 
-        //a system built using the Turtle sample
+        //an obstacle using the Turtle commands
         _system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
 
-        //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for pathfinding
+        //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
         beginMesh();
         evaluateSystem();
         endMesh();
-
+        
         _meshes[0].setEnabled(false); //don't draw it
+
+        //now we have each turtle position stored in _points, we're going to use this as our obstacle
+
+        //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
 
         //get the extents of _points
         var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
@@ -130,18 +135,17 @@ class Pathfinding extends TurtleBase {
             maxPoint.y = Math.max(maxPoint.y, point.y);
         }
 
-        trace(minPoint);
-        trace(maxPoint);
+        //let's translate all points into positive and add a bit for a border 
 
+        //find the amount of x and y we need add so all points are positive
         var deltaY:Float = 0 - minPoint.y;
         var deltaX:Float = 0 - minPoint.x;
 
         var border:Float = 50;
 
-        //let's translate all points into positive and add a bit for a border 
         if(deltaY > 0) {
             for(point in _points) {
-                point.y += deltaY + border;
+                point.y += deltaY + border; //move each position by this amount, plus add border 
             }
         }
 
@@ -154,6 +158,7 @@ class Pathfinding extends TurtleBase {
         minPoint = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
         maxPoint = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 
+        //get our extents so we can pass these to hxdadelus for our obstacle boundaries
         for(point in _points) {
             minPoint.x = Math.min(minPoint.x, point.x);
             minPoint.y = Math.min(minPoint.y, point.y);
@@ -161,29 +166,31 @@ class Pathfinding extends TurtleBase {
             maxPoint.y = Math.max(maxPoint.y, point.y);
         }
 
-        trace(minPoint);
-        trace(maxPoint);
-
         //Now for the pathfinding mesh
-        //Add a rectangle border greater than size of current points
+        //We'll use our extents maxPoint to build our boundary rectangle which starts at 0,0 and goes out to maxPoint.x + border and maxPoint.y + border
         _obstacleMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
 
-        //Add a constraint object
+        //Add a constraint object - this will use our turtle obstacle 
         var object:Object = new Object();
         
         object.coordinates = new Array<Float>();
 
         var prevPoint:Vector3 = null;
         
-        //hxdaedalus allows you to insert an object with coordinations of line segments so we'll pass our points in as object.coordinates
+        //hxdaedalus allows you to insert an object with line segments so we'll pass our points as 
+        //a line segment between every two points
+
+        //for each set of points 
         for(point in _points) {
             if(prevPoint == null) {
                 prevPoint = point;
                 continue;
             }
 
+            //from
             object.coordinates.push(prevPoint.x);
             object.coordinates.push(prevPoint.y);
+            //to
             object.coordinates.push(point.x);
             object.coordinates.push(point.y);
 
@@ -192,7 +199,7 @@ class Pathfinding extends TurtleBase {
 
         _obstacleMesh.insertObject(object);
         
-        //now we're going to create a drawable mesh
+        //now we're going to create a mesh that will allow us to visualize the obstacle and walkable paths
         var vertsAndEdges = _obstacleMesh.getVerticesAndEdges();
 
         var edgePoints:Array<Vector3> = [];
@@ -205,6 +212,7 @@ class Pathfinding extends TurtleBase {
             
             var mesh = com.babylonhx.mesh.Mesh.CreateLines("", edgePoints, _scene, false);
 
+            //constrained edges are the obstacle edges and not constrained are the walkable edges
             if(edge.isConstrained) {
                 mesh.color = Color3.White();
             } else {
