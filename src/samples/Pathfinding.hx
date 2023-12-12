@@ -53,6 +53,7 @@ class Pathfinding extends TurtleBase {
     private var _pathSampler:LinearPathSampler;
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
+    private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
         
 	public function new(scene:Scene) {
 
@@ -85,6 +86,28 @@ class Pathfinding extends TurtleBase {
         scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
             this.onBeforeRender(scene, es); 
         });
+
+        //make a little triangle 
+        penUp();
+        beginMesh();
+        left(180);
+        forward(5);
+        right(180);
+        penDown();
+        forward(10);
+        left(120);
+        forward(10);
+        left(120);
+        forward(10);
+        left(120);
+        forward(10);
+        endMesh();
+
+        //grab the current mesh so it doesn't get disposed
+        _arrowMesh = _meshes[0];
+        _meshes = [];
+
+        disposeMeshes();
 
         //a system built using the Turtle sample
         _system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
@@ -212,7 +235,7 @@ class Pathfinding extends TurtleBase {
         _pathSampler.entity = _entityAI;
         _pathSampler.samplingDistance = 10;
         _pathSampler.path = _path;
-        
+                
 		scene.getEngine().runRenderLoop(function () {
             scene.render();
         });
@@ -225,6 +248,9 @@ class Pathfinding extends TurtleBase {
 
         if(_pathSampler.hasNext) {
             _pathSampler.next();
+            _arrowMesh.position.x = _entityAI.x;
+            _arrowMesh.position.y = _entityAI.y;
+            _arrowMesh.position.z = 0;
         }
 
         var dt = scene.getEngine().getDeltaTime();
@@ -252,9 +278,8 @@ class Pathfinding extends TurtleBase {
 
     private function onMouseDown(evt:PointerEvent) {
             
-        //todo
         //we can't just use evt.x and evt.y because they're in screen space 
-        //need to get intersection of screen x,y with plane
+        //need to get intersection of screen x,y with a plane so we can get the world space position
         var world = Matrix.Identity();
 
         var ray = this._scene.createPickingRay(evt.x, evt.y, world);
@@ -269,9 +294,12 @@ class Pathfinding extends TurtleBase {
             var hitPos = ray.origin.add(ray.direction.multiplyByFloats(distance, distance, distance));
             _pathfinder.findPath(hitPos.x, hitPos.y, _path );
 
+            _pathSampler.reset();
+            
+            //now get the path and create some lines to represent it
             var pathPoints:Array<Vector3> = [];
     
-            var i = 2;
+            var i = 0;
             while (i < _path.length) {
                 pathPoints.push(new Vector3(_path[i], _path[i + 1]));
                 i += 2;
