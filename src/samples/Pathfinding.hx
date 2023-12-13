@@ -45,15 +45,14 @@ import hxDaedalus.factories.RectMesh;
 */
 class Pathfinding extends SampleBase {
 
-    private var _startPosition:Vector2 = Vector2.Zero();
-    private var _endPosition:Vector2 = Vector2.Zero();
     private var _obstacleMesh : Mesh;
     private var _entityAI:EntityAI;
     private var _pathfinder:PathFinder;
     private var _pathSampler:LinearPathSampler;
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
-    private var _obstacleLineMeshes:Array<LinesMesh>;
+    private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
+    //private var _obstacleLinesMesh:com.babylonhx.mesh.Mesh = null;
     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
     private var _turtleDrawer:TurtleDrawer = null;
 
@@ -214,6 +213,7 @@ class Pathfinding extends SampleBase {
 
         var edgePoints:Array<Vector3> = [];
 
+        //var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
         _obstacleLineMeshes = [];
 
         //create meshes from the edges 
@@ -235,6 +235,8 @@ class Pathfinding extends SampleBase {
 
             edgePoints = [];
         }
+
+        //_obstacleLinesMesh = com.babylonhx.mesh.Mesh.MergeMeshes(obstacleLineMeshes, true);
 
         // we need an entity
         _entityAI = new EntityAI();
@@ -267,16 +269,6 @@ class Pathfinding extends SampleBase {
 
         super.activate();
 
-        if(_pathMesh != null) {
-            _pathMesh.setEnabled(true);
-        }
-
-        for(mesh in _obstacleLineMeshes) {
-            mesh.setEnabled(true);
-        }
-        
-        _arrowMesh.setEnabled(true);
-
         //activate happens after init, so everything is created at this point
         _scene.getEngine().keyDown.push(_onKeyDown);
         _scene.getEngine().keyUp.push(_onKeyUp);
@@ -289,29 +281,49 @@ class Pathfinding extends SampleBase {
     }
 
     /** 
-        Deactivate our state
+        Deactivate our state, for this sample we'll destroy everything in deactivate
     **/
     public override function deactivate() {
 
         super.deactivate();
 
         if(_pathMesh != null) {
-            _pathMesh.setEnabled(false);
+            _pathMesh.dispose();
         }
+
+        _pathMesh = null;
 
         for(mesh in _obstacleLineMeshes) {
-            mesh.setEnabled(false);
+            mesh.dispose();
         }
 
-        _arrowMesh.setEnabled(false);
+        _obstacleLineMeshes = null;
+
+        //_obstacleLinesMesh.dispose();
+        //_obstacleLinesMesh = null;
+
+        _path = [];
+
+        _arrowMesh.dispose();
+        _arrowMesh = null;
 
         _scene.getEngine().keyDown.remove(_onKeyDown);
         _scene.getEngine().keyUp.remove(_onKeyUp);
         _scene.getEngine().mouseDown.remove(_onMouseDown);
 
-        _light.setEnabled(false);
+        _light.dispose();
+        _light = null;
 
         _camera.detachControl();
+        _camera.dispose();
+        _camera = null;
+
+        _initialized = false;
+
+        _pathfinder.dispose();
+        _pathfinder = null;
+        _pathSampler.dispose();
+        _pathSampler = null;
     }
     
     //Perform our updates
