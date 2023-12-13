@@ -1,4 +1,4 @@
-package samples;
+package centauri.turtle;
 
 import com.babylonhx.math.Matrix;
 import com.babylonhx.math.Quaternion;
@@ -40,23 +40,22 @@ class TurtleTransform {
 	}
 }
 
-class TurtleBase {
+class TurtleDrawer {
 
-    private var _currentTransform: TurtleTransform = null;
-    private var _points:Array<Vector3> = [];
+    var _scene:Scene = null;
+    public var _currentTransform: TurtleTransform = null;
+    public var _points:Array<Vector3> = [];
     private var _transformsStack:Array<TurtleTransform> = [];
     private var _branchCounter:Int = 1;
-    private var _scene:Scene = null;
     private var _colorsStack:Array<Color3> = [];
 
-    var _keysDown:Map<Int, Bool> = new Map();
-    var _turnRadius:Float = 90;
-    var _distance:Float = 10;
-    var _system:String = "";
-    var _meshes:Array<Mesh> = [];
-    var _keysHandled:Map<Int, Bool> = new Map();
-    var _elapsedTime:Float = 0;
-    var _penDown:Bool = true;
+    public var _turnRadius:Float = 90;
+    public var _distance:Float = 10;
+    public var _system:String = "";
+    public var _meshes:Array<Mesh> = [];
+        
+    
+    private var _penDown:Bool = true;
 
     private static var _rotationAxisCache:Quaternion = new Quaternion();
     private static var _rotationAxisTemp:Quaternion = new Quaternion();
@@ -64,6 +63,10 @@ class TurtleBase {
     private static var _localWorldTemp:Matrix = Matrix.Zero();
     private static var _invLocalWorldTemp:Matrix = Matrix.Zero();
     private static var _positionLocalTemp:Vector3 = Vector3.Zero();
+
+    public function new(scene:Scene) {
+        _scene = scene;
+    }
 
 	inline public function rollClockwise(degrees:Float) {
         rotate(Axis.X, DegreesToRadians(degrees));
@@ -198,6 +201,20 @@ class TurtleBase {
         // if(_currentTransform != null) {
         //     _currentTransform.dispose();
         // }
+    }
+
+    public function showMeshes() {
+        //destroy current mesh and rebuild from scratch
+        for(mesh in _meshes) {
+            mesh.setEnabled(true);
+        }
+    }
+
+    public function hideMeshes() {
+        //destroy current mesh and rebuild from scratch
+        for(mesh in _meshes) {
+            mesh.setEnabled(false);
+        }
     }
 
     public function beginMesh() {

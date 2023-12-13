@@ -1,5 +1,6 @@
 package;
 
+import samples.SampleSwitcher;
 import lime.ui.MouseWheelMode;
 #if cpp
 //import hxtelemetry.HxTelemetry;
@@ -75,8 +76,8 @@ class MainLime extends Application {
 	override public function onPreloadComplete() {
 
 		//run the sample 
-		//new samples.Turtle(scene);
-		new samples.Pathfinding(scene);
+		var switcher = new SampleSwitcher(scene);
+
 	}
 	
 	override function onMouseDown(x:Float, y:Float, button:Int) {

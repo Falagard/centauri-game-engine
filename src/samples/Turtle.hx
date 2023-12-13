@@ -22,116 +22,174 @@ import com.babylonhx.layer.Layer;
 import com.babylonhx.mesh.VertexBuffer;
 import com.babylonhx.Scene;
 import com.babylonhx.tools.EventState;
+import centauri.turtle.TurtleDrawer;
 
 /**
  * ...
  * @author Clay Larabie
  */
-class Turtle extends TurtleBase {
+class Turtle extends SampleBase {
+
+    private var _turtleDrawer:TurtleDrawer = null;
+    private var _turtlePointer:Mesh = null;
+
+    //our input functions so we can register and unregister them when the sample is activated / deactivated
+    private var _onKeyDown:Int->Void = function(keycode:Int) { };
+    private var _onKeyUp:Int->Void = function(keycode:Int) { };
+
+    private var _camera:ArcRotateCamera = null;
+    private var _light:HemisphericLight = null;
 
 	public function new(scene:Scene) {
+        super(scene);
+    }
 
-        _scene = scene;
+    /**
+        Init our state
+    **/
+    public override function init() {
 
-		var camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), scene);
-        //var camera = new FreeCamera("Camera", new Vector3(20, 30, -100), scene);
-		camera.setPosition(new Vector3(0, 0, 400));
-		camera.attachControl();
-		camera.maxZ = 20000;		
-		camera.lowerRadiusLimit = 150;
-		
-		var light = new HemisphericLight("hemi", new Vector3(0, 1, 0), scene);
-		light.diffuse = Color3.FromInt(0xf68712);
-	
-        scene.getEngine().keyDown.push(function(keyCode:Int) {
+        super.init();
+
+        _onKeyDown = function(keyCode:Int) {
 			_keysDown[keyCode] = true;
-		});
+		};
 
-		scene.getEngine().keyUp.push(function(keyCode:Int) {
+		_onKeyUp = function(keyCode:Int) {
             _keysDown[keyCode] = false;
             _keysHandled[keyCode] = false;
-		});
+		};
 
+        _turtleDrawer = new TurtleDrawer(_scene);
+
+		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
+        _camera.setPosition(new Vector3(0, 0, 400));
+		
+		_camera.maxZ = 20000;		
+		_camera.lowerRadiusLimit = 150;
+		
+		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
+		_light.diffuse = Color3.FromInt(0xf68712);
+	
         //draw a pointer mesh for the turtle direction
-        penUp();
-        beginMesh();
-        left(180);
-        forward(5);
-        right(180);
-        penDown();
-        forward(10);
-        left(120);
-        forward(10);
-        left(120);
-        forward(10);
-        left(120);
-        forward(10);
-        endMesh();
+        _turtleDrawer.penUp();
+        _turtleDrawer.beginMesh();
+        _turtleDrawer.left(180);
+        _turtleDrawer.forward(5);
+        _turtleDrawer.right(180);
+        _turtleDrawer.penDown();
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.endMesh();
 
         //grab the current mesh so it doesn't get disposed
-        var turtleMesh:Mesh = _meshes[0];
-        _meshes = [];
-        		
-		scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
-            //check state of keys, update the turtle string
-            var anyChanged:Bool = false;
+        _turtlePointer = _turtleDrawer._meshes[0];
+        _turtleDrawer._meshes = [];
+    }
 
-            var dt = scene.getEngine().getDeltaTime();
-            _elapsedTime += dt;
+    /**
+        Activate our state 
+    **/
+    public override function activate() {
 
-            //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-            if(_elapsedTime > 300) {
-                _keysHandled = new Map();
-            }
+        super.activate();
 
-            if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
-                //move forward
-                _system += "F";
-                anyChanged = true;
-                _keysHandled[Keycodes.key_w] = true;
-            }
+        //activate happens after init, so everything is created at this point
+        //show the pointer and turtle line meshes
+        _turtlePointer.setEnabled(true);
+        _turtleDrawer.showMeshes();
 
-            if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
-                //erase last move;
-                _system = _system.substr(0, _system.length - 2);
-                anyChanged = true;
-                _keysHandled[Keycodes.key_s] = true;
-            }
+        _scene.getEngine().keyDown.push(_onKeyDown);
+        _scene.getEngine().keyUp.push(_onKeyUp);
+        
+        _light.setEnabled(true);
+        _scene.activeCamera = _camera;
 
-            if(_keysDown[Keycodes.key_d] && !_keysHandled[Keycodes.key_d]) {
-                _system += "+";
-                anyChanged = true;
-                _keysHandled[Keycodes.key_d] = true;
-            }
+        _camera.attachControl();
 
-            if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
-                _system += "-";
-                anyChanged = true;
-                _keysHandled[Keycodes.key_a] = true;
-            }
+    }
 
-            if(anyChanged) {
+    /** 
+        Deactivate our state
+    **/
+    public override function deactivate() {
 
-                //destroy current meshes
-                disposeMeshes();
+        super.deactivate();
 
-                _elapsedTime = 0;
+        _turtlePointer.setEnabled(false);
+        _turtleDrawer.hideMeshes();
 
-                beginMesh();
+        _scene.getEngine().keyDown.remove(_onKeyDown);
+        _scene.getEngine().keyUp.remove(_onKeyUp);
 
-                evaluateSystem();
+        _light.setEnabled(false);
 
-                endMesh();   
+        _camera.detachControl();
+    }
 
-                turtleMesh.position = _currentTransform.position;
-                turtleMesh.rotationQuaternion = _currentTransform.rotationQuaternion;
-                
+    /** 
+        Our update function - check for input, update the turtle drawer         
+    **/
+    public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
+        
+        //check state of keys, update the turtle string
+        var anyChanged:Bool = false;
 
-            }
-        });
-		
-		scene.getEngine().runRenderLoop(function () {
-            scene.render();
-        });
+        var dt = scene.getEngine().getDeltaTime();
+        _elapsedTime += dt;
+
+        //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
+        if(_elapsedTime > 300) {
+            _keysHandled = new Map();
+        }
+
+        if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
+            //move forward
+            _turtleDrawer._system += "F";
+            anyChanged = true;
+            _keysHandled[Keycodes.key_w] = true;
+        }
+
+        if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
+            //erase last move;
+            _turtleDrawer._system = _turtleDrawer._system.substr(0, _turtleDrawer._system.length - 2);
+            anyChanged = true;
+            _keysHandled[Keycodes.key_s] = true;
+        }
+
+        if(_keysDown[Keycodes.key_d] && !_keysHandled[Keycodes.key_d]) {
+            _turtleDrawer._system += "+";
+            anyChanged = true;
+            _keysHandled[Keycodes.key_d] = true;
+        }
+
+        if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
+            _turtleDrawer._system += "-";
+            anyChanged = true;
+            _keysHandled[Keycodes.key_a] = true;
+        }
+
+        if(anyChanged) {
+
+            //destroy current meshes
+            _turtleDrawer.disposeMeshes();
+
+            _elapsedTime = 0;
+
+            _turtleDrawer.beginMesh();
+
+            _turtleDrawer.evaluateSystem();
+
+            _turtleDrawer.endMesh();   
+
+            _turtlePointer.position = _turtleDrawer._currentTransform.position;
+            _turtlePointer.rotationQuaternion = _turtleDrawer._currentTransform.rotationQuaternion;
+            
+        }
     }
 }

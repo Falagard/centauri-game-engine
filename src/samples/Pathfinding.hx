@@ -1,5 +1,6 @@
 package samples;
 
+import centauri.turtle.TurtleDrawer;
 import com.babylonhx.math.Plane;
 import com.babylonhx.math.Matrix;
 import com.babylonhx.mesh.LinesMesh;
@@ -40,10 +41,9 @@ import hxDaedalus.data.Vertex;
 import hxDaedalus.factories.RectMesh;
 
 /**
- * ...
- * @author Clay Larabie
- */
-class Pathfinding extends TurtleBase {
+ 
+*/
+class Pathfinding extends SampleBase {
 
     private var _startPosition:Vector2 = Vector2.Zero();
     private var _endPosition:Vector2 = Vector2.Zero();
@@ -53,72 +53,82 @@ class Pathfinding extends TurtleBase {
     private var _pathSampler:LinearPathSampler;
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
+    private var _obstacleLineMeshes:Array<LinesMesh>;
     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
+    private var _turtleDrawer:TurtleDrawer = null;
 
-    // We're going to use hxdaedalus and an obstacle that is built using turtle commands and allow an entity to move around using pathfinding 
+    private var _onKeyDown:Int->Void = function(keycode:Int) { };
+    private var _onKeyUp:Int->Void = function(keycode:Int) { };
+    private var _onMouseDown:PointerEvent->Void = function(evt:PointerEvent) { };
+
+    private var _camera:ArcRotateCamera = null;
+    private var _light:HemisphericLight = null;
+
     public function new(scene:Scene) {
+        super(scene);
+    }
+    
 
-        _scene = scene;
+    /**
+        We're going to use hxdaedalus and an obstacle that is built using turtle commands and allow an entity to move around using pathfinding 
+    **/
+    public override function init() {
 
-		var camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), scene);
-        
-		camera.setPosition(new Vector3(0, 0, 400));
-		camera.attachControl();
-		camera.maxZ = 20000;		
-		camera.lowerRadiusLimit = 150;
-		
-		var light = new HemisphericLight("hemi", new Vector3(0, 1, 0), scene);
-		light.diffuse = Color3.FromInt(0xf68712);
+        super.init();
 
-        //handle inputs
-        scene.getEngine().mouseDown.push(function(evt:PointerEvent) {
-            return this.onMouseDown(evt);
-        });
-	
-        scene.getEngine().keyDown.push(function(keyCode:Int) {
-            return this.onKeyDown(keyCode);
-		});
+        _onKeyDown = function(keyCode:Int) {
+			return this.onKeyDown(keyCode);
+		};
 
-		scene.getEngine().keyUp.push(function(keyCode:Int) {
+		_onKeyUp = function(keyCode:Int) {
             return this.onKeyUp(keyCode);
-		});
+		};
 
-        //register our onBeforeRender callback
-        scene.registerBeforeRender(function(scene:Scene, es:Null<EventState>) {
-            this.onBeforeRender(scene, es); 
-        });
+        _onMouseDown = function(evt:PointerEvent) {
+            return this.onMouseDown(evt);
+        }
+
+		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
+        _camera.setPosition(new Vector3(0, 0, 400));
+		_camera.maxZ = 20000;		
+		_camera.lowerRadiusLimit = 150;
+		
+		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
+		_light.diffuse = Color3.FromInt(0xf68712);
+
+        _turtleDrawer = new TurtleDrawer(_scene);
 
         //make a little triangle we'll use for our entity position
-        penUp();
-        beginMesh();
-        left(180);
-        forward(5);
-        right(180);
-        penDown();
-        forward(10);
-        left(120);
-        forward(10);
-        left(120);
-        forward(10);
-        left(120);
-        forward(10);
-        endMesh();
+        _turtleDrawer.penUp();
+        _turtleDrawer.beginMesh();
+        _turtleDrawer.left(180);
+        _turtleDrawer.forward(5);
+        _turtleDrawer.right(180);
+        _turtleDrawer.penDown();
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.left(120);
+        _turtleDrawer.forward(10);
+        _turtleDrawer.endMesh();
 
         //grab the current mesh so it doesn't get disposed when we call disposeMeshes()
-        _arrowMesh = _meshes[0];
-        _meshes = [];
+        _arrowMesh = _turtleDrawer._meshes[0];
+        _turtleDrawer._meshes = [];
 
-        disposeMeshes();
+        _turtleDrawer.disposeMeshes();
 
         //an obstacle using the Turtle commands
-        _system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
+        _turtleDrawer._system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
 
         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
-        beginMesh();
-        evaluateSystem();
-        endMesh();
+        _turtleDrawer.beginMesh();
+        _turtleDrawer.evaluateSystem();
+        _turtleDrawer.endMesh();
         
-        _meshes[0].setEnabled(false); //don't draw it
+        _turtleDrawer._meshes[0].setEnabled(false); //don't draw it
 
         //now we have each turtle position stored in _points, we're going to use this as our obstacle
 
@@ -128,7 +138,7 @@ class Pathfinding extends TurtleBase {
         var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
         var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 
-        for(point in _points) {
+        for(point in _turtleDrawer._points) {
             minPoint.x = Math.min(minPoint.x, point.x);
             minPoint.y = Math.min(minPoint.y, point.y);
             maxPoint.x = Math.max(maxPoint.x, point.x);
@@ -144,13 +154,13 @@ class Pathfinding extends TurtleBase {
         var border:Float = 50;
 
         if(deltaY > 0) {
-            for(point in _points) {
+            for(point in _turtleDrawer._points) {
                 point.y += deltaY + border; //move each position by this amount, plus add border 
             }
         }
 
         if(deltaX > 0) {
-            for(point in _points) {
+            for(point in _turtleDrawer._points) {
                 point.x += deltaX + border;
             }
         }
@@ -159,7 +169,7 @@ class Pathfinding extends TurtleBase {
         maxPoint = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 
         //get our extents so we can pass these to hxdadelus for our obstacle boundaries
-        for(point in _points) {
+        for(point in _turtleDrawer._points) {
             minPoint.x = Math.min(minPoint.x, point.x);
             minPoint.y = Math.min(minPoint.y, point.y);
             maxPoint.x = Math.max(maxPoint.x, point.x);
@@ -181,7 +191,7 @@ class Pathfinding extends TurtleBase {
         //a line segment between every two points
 
         //for each set of points 
-        for(point in _points) {
+        for(point in _turtleDrawer._points) {
             if(prevPoint == null) {
                 prevPoint = point;
                 continue;
@@ -204,6 +214,8 @@ class Pathfinding extends TurtleBase {
 
         var edgePoints:Array<Vector3> = [];
 
+        _obstacleLineMeshes = [];
+
         //create meshes from the edges 
         for(edge in vertsAndEdges.edges) {
             
@@ -218,6 +230,8 @@ class Pathfinding extends TurtleBase {
             } else {
                 mesh.color = Color3.Blue();
             }
+
+            _obstacleLineMeshes.push(mesh);
 
             edgePoints = [];
         }
@@ -243,14 +257,65 @@ class Pathfinding extends TurtleBase {
         _pathSampler.entity = _entityAI;
         _pathSampler.samplingDistance = 10;
         _pathSampler.path = _path;
-                
-		scene.getEngine().runRenderLoop(function () {
-            scene.render();
-        });
+        
+    }
+
+    /**
+        Activate our state 
+    **/
+    public override function activate() {
+
+        super.activate();
+
+        if(_pathMesh != null) {
+            _pathMesh.setEnabled(true);
+        }
+
+        for(mesh in _obstacleLineMeshes) {
+            mesh.setEnabled(true);
+        }
+        
+        _arrowMesh.setEnabled(true);
+
+        //activate happens after init, so everything is created at this point
+        _scene.getEngine().keyDown.push(_onKeyDown);
+        _scene.getEngine().keyUp.push(_onKeyUp);
+        _scene.getEngine().mouseDown.push(_onMouseDown);
+        
+        _light.setEnabled(true);
+        _scene.activeCamera = _camera;
+
+        _camera.attachControl();
+    }
+
+    /** 
+        Deactivate our state
+    **/
+    public override function deactivate() {
+
+        super.deactivate();
+
+        if(_pathMesh != null) {
+            _pathMesh.setEnabled(false);
+        }
+
+        for(mesh in _obstacleLineMeshes) {
+            mesh.setEnabled(false);
+        }
+
+        _arrowMesh.setEnabled(false);
+
+        _scene.getEngine().keyDown.remove(_onKeyDown);
+        _scene.getEngine().keyUp.remove(_onKeyUp);
+        _scene.getEngine().mouseDown.remove(_onMouseDown);
+
+        _light.setEnabled(false);
+
+        _camera.detachControl();
     }
     
     //Perform our updates
-    private function onBeforeRender(scene:Scene, es:Null<EventState>) {
+    public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
             
         _obstacleMesh.updateObjects();
 
@@ -265,14 +330,14 @@ class Pathfinding extends TurtleBase {
         _elapsedTime += dt;
 
         //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-        if(_elapsedTime > 300) {
-            _keysHandled = new Map();
-        }
+        // if(_elapsedTime > 300) {
+        //     _keysHandled = new Map();
+        // }
 
-        if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
+        // if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
             
-            _keysHandled[Keycodes.key_1] = true;
-        }
+        //     _keysHandled[Keycodes.key_1] = true;
+        // }
     }
 
     private function onKeyDown(keyCode:Int) {

@@ -1,6 +1,6 @@
 # Centauri Game Engine
 
-The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, artificial intelligence systems, entity component systems, and more to create a full game engine. 
+The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, (and eventually artificial intelligence systems, entity component systems, and more) to create a full game engine. 
 
 To get the engine running, do the following:
 
@@ -48,13 +48,13 @@ When Lime is installed and configured you'll have to install dev tools for each 
 
 This will start download process of VisualStudio and it will install and setup everything for you (will it? - needs testing). For every other platform the process is the same but has not been fully tested yet. 
 
-# Setup BabylonHx and hxDaedalus
+# Setup Submodules with Haxelib
 
-Next we'll install BabylonHX (for more information see https://github.com/Falagard/BabylonHx) which is a rendering engine built on top of Lime and is a port of BabylonJS (for more information see https://www.babylonjs.com/). 
+Next we'll setup BabylonHX (for more information see https://github.com/Falagard/BabylonHx) which is a rendering engine built on top of Lime and is a port of BabylonJS (for more information see https://www.babylonjs.com/). 
 
 BabylonHX handles meshes, lights, materials, shaders, animations and many other parts that are needed by a game engine. 
 
-We've already run the git clone command with the --recurse-submodules argument so BabylonHx should already be in a directory where this repository was cloned. 
+We've already run the git clone command with the --recurse-submodules argument so BabylonHx should already be in a sub directory where this repository was cloned. 
 
 We still need to tell Haxe where to find this BabylonHX, so change into the directory you cloned earlier by entering at the command line:
 
@@ -71,6 +71,8 @@ hxDaedalus is a pathfinding library which can be used to tell AI or players wher
 We'll tell haxlib it can find the hxDaedalus directory in a folder below centauri-game-engine called "hxDaedalus"
 
 `haxelib dev hxDaedalus hxDaedalus`
+
+`haxelib git record-macros https://github.com/HaxeFoundation/record-macros`
 
 # Install Visual Studio Code and Extensions
 
