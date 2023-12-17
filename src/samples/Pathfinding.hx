@@ -1,5 +1,6 @@
 package samples;
 
+import lime.utils.Assets;
 import centauri.turtle.TurtleDrawer;
 import com.babylonhx.math.Plane;
 import com.babylonhx.math.Matrix;
@@ -39,6 +40,7 @@ import hxDaedalus.data.Object;
 import hxDaedalus.data.Vertex;
 //import hxDaedalus.view.SimpleView;
 import hxDaedalus.factories.RectMesh;
+import centauri.data.World;
 
 /**
  
@@ -119,8 +121,13 @@ class Pathfinding extends SampleBase {
 
         _turtleDrawer.disposeMeshes();
 
+        //load value from world.cdb which is a castledb database 
+        var worldText = Assets.getText("assets/data/world.cdb");
+        World.load(worldText);
+        _turtleDrawer._system = World.trails.get(trail01).trail;
+
         //an obstacle using the Turtle commands
-        _turtleDrawer._system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
+        //_turtleDrawer._system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
 
         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
         _turtleDrawer.beginMesh();

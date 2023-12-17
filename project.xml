@@ -11,6 +11,7 @@
 	<haxelib name="lime" />
 	<haxelib name="babylonhx" />
 	<haxelib name="hxdaedalus" />
+	<haxelib name="castle" />
 	
 	<!-- <haxelib name="actuate" /> -->
 	<!-- <haxelib name="hxcpp-debug-server" /> -->

@@ -1,5 +1,6 @@
 package samples;
 
+import sys.FileSystem;
 import com.babylonhx.engine.EngineCapabilities.WEBGL_compressed_texture_s3tc;
 import com.babylonhx.utils.Keycodes;
 import com.babylonhx.cameras.FreeCamera;
@@ -148,6 +149,13 @@ class Turtle extends SampleBase {
         //     _keysHandled = new Map();
         // }
 
+        //check ctrl+s to save the trail 
+        if(_keysDown[Keycodes.lctrl] && _keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
+            _keysHandled[Keycodes.key_s] = true;
+            //save to file 
+            saveTrail();
+        }
+
         if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
             //move forward
             _turtleDrawer._system += "F";
@@ -174,12 +182,6 @@ class Turtle extends SampleBase {
             _keysHandled[Keycodes.key_a] = true;
         }
 
-        if(_keysDown[Keycodes.lctrl] && _keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
-            _keysHandled[Keycodes.key_s] = true;
-            //save to file 
-            
-        }
-
         if(anyChanged) {
 
             //destroy current meshes
@@ -197,5 +199,14 @@ class Turtle extends SampleBase {
             _turtlePointer.rotationQuaternion = _turtleDrawer._currentTransform.rotationQuaternion;
             
         }
+    }
+
+    public function saveTrail() {
+        #if sys
+        //We're going to save out the assets/temp folder under the application bin directory. 
+        //This allows us to copy the string out of turtle_trails.txt and store it in a castledb database file, for exmaple. 
+        FileSystem.createDirectory("assets/temp/");
+        sys.io.File.saveContent("assets/temp/turtle_trails.txt", _turtleDrawer._system);
+        #end
     }
 }

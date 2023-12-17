@@ -15,12 +15,8 @@
 			],
 			"lines": [
 				{
-					"id": "test1",
-					"trail": "ff++11"
-				},
-				{
-					"id": "test2",
-					"trail": ""
+					"id": "trail01",
+					"trail": "-F-+FF+FFFFFF+FFF+F+FF-FFFF-FFF-FFFFF++-F+FFFFF+--FF-FFFFF+FFF+FFFFF+--FF-FF-F+FFF+F+FF-F-FF++-F+FFF+F-FFF+FFFF+FFFF-F-F-F+F+F-FF+FFFFF"
 				}
 			],
 			"separators": [],
