@@ -72,7 +72,9 @@ We'll tell haxlib it can find the hxDaedalus directory in a folder below centaur
 
 `haxelib dev hxDaedalus hxDaedalus`
 
-`haxelib git record-macros https://github.com/HaxeFoundation/record-macros`
+CastleDB is a structured static database that allows you to edit your game data using an editor that is downloadable from here http://castledb.org/ and provides you with a fast, easy and strictly typed way of accessing your game data. 
+
+`haxelib install castle 1.6.1`
 
 # Install Visual Studio Code and Extensions
 

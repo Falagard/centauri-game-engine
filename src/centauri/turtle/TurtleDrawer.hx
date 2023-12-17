@@ -251,6 +251,7 @@ class TurtleDrawer {
             if(item == "F") {
                 forward(_distance);
             } else if(item == "f") {
+                //small f is a diagonal movement 
                 forward(_distanceDiag);               
             } else if(item == "+") {
                 right(_turnRadius);

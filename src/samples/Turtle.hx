@@ -175,11 +175,11 @@ class Turtle extends SampleBase {
             //erase the last move, but first check if we need to switchDiagonal
             
             //get previous move
-            var previousMove = _turtleDrawer._system.substring(_turtleDrawer._system.length - 1, 1);
+            var previousMove = _turtleDrawer._system.substr(_turtleDrawer._system.length - 1);
             if(previousMove == "+" || previousMove == "-") {
                 switchDiagonal();
             }
-            _turtleDrawer._system = _turtleDrawer._system.substr(0, _turtleDrawer._system.length - 2);
+            _turtleDrawer._system = _turtleDrawer._system.substr(0, _turtleDrawer._system.length - 1);
             anyChanged = true;
             _keysHandled[Keycodes.key_s] = true;
         }
