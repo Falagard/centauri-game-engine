@@ -144,9 +144,9 @@ class Turtle extends SampleBase {
         _elapsedTime += dt;
 
         //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-        if(_elapsedTime > 300) {
-            _keysHandled = new Map();
-        }
+        // if(_elapsedTime > 300) {
+        //     _keysHandled = new Map();
+        // }
 
         if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
             //move forward
@@ -172,6 +172,12 @@ class Turtle extends SampleBase {
             _turtleDrawer._system += "-";
             anyChanged = true;
             _keysHandled[Keycodes.key_a] = true;
+        }
+
+        if(_keysDown[Keycodes.lctrl] && _keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
+            _keysHandled[Keycodes.key_s] = true;
+            //save to file 
+            
         }
 
         if(anyChanged) {

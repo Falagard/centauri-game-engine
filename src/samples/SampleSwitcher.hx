@@ -36,12 +36,12 @@ class SampleSwitcher {
             var dt = scene.getEngine().getDeltaTime();
             _elapsedTime += dt;
 
-            if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
+            if(_keysDown[Keycodes.key_1] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_1]) {
                 changeSample(0);
                 _keysHandled[Keycodes.key_1] = true;
             }
 
-            if(_keysDown[Keycodes.key_2] && !_keysHandled[Keycodes.key_2]) {
+            if(_keysDown[Keycodes.key_2] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_2]) {
                 changeSample(1);
                 _keysHandled[Keycodes.key_2] = true;
             }

@@ -1,0 +1,32 @@
+{
+	"sheets": [
+		{
+			"name": "trails",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id"
+				},
+				{
+					"typeStr": "1",
+					"name": "trail",
+					"display": null
+				}
+			],
+			"lines": [
+				{
+					"id": "test1",
+					"trail": "ff++11"
+				},
+				{
+					"id": "test2",
+					"trail": ""
+				}
+			],
+			"separators": [],
+			"props": {}
+		}
+	],
+	"customTypes": [],
+	"compress": false
+}
