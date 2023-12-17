@@ -33,6 +33,7 @@ class Turtle extends SampleBase {
 
     private var _turtleDrawer:TurtleDrawer = null;
     private var _turtlePointer:Mesh = null;
+    private var _isDiagonal:Bool = false;
 
     //our input functions so we can register and unregister them when the sample is activated / deactivated
     private var _onKeyDown:Int->Void = function(keycode:Int) { };
@@ -91,6 +92,9 @@ class Turtle extends SampleBase {
         //grab the current mesh so it doesn't get disposed
         _turtlePointer = _turtleDrawer._meshes[0];
         _turtleDrawer._meshes = [];
+
+        _turtleDrawer._turnRadius = 45;
+
     }
 
     /**
@@ -158,13 +162,23 @@ class Turtle extends SampleBase {
 
         if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
             //move forward
-            _turtleDrawer._system += "F";
+            if(_isDiagonal) {
+                _turtleDrawer._system += "f";
+            } else {
+                _turtleDrawer._system += "F";
+            }
             anyChanged = true;
             _keysHandled[Keycodes.key_w] = true;
         }
 
         if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
-            //erase last move;
+            //erase the last move, but first check if we need to switchDiagonal
+            
+            //get previous move
+            var previousMove = _turtleDrawer._system.substring(_turtleDrawer._system.length - 1, 1);
+            if(previousMove == "+" || previousMove == "-") {
+                switchDiagonal();
+            }
             _turtleDrawer._system = _turtleDrawer._system.substr(0, _turtleDrawer._system.length - 2);
             anyChanged = true;
             _keysHandled[Keycodes.key_s] = true;
@@ -174,12 +188,14 @@ class Turtle extends SampleBase {
             _turtleDrawer._system += "+";
             anyChanged = true;
             _keysHandled[Keycodes.key_d] = true;
+            switchDiagonal();
         }
 
         if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
             _turtleDrawer._system += "-";
             anyChanged = true;
             _keysHandled[Keycodes.key_a] = true;
+            switchDiagonal();
         }
 
         if(anyChanged) {
@@ -199,6 +215,10 @@ class Turtle extends SampleBase {
             _turtlePointer.rotationQuaternion = _turtleDrawer._currentTransform.rotationQuaternion;
             
         }
+    }
+
+    public function switchDiagonal() {
+        _isDiagonal = !_isDiagonal;
     }
 
     public function saveTrail() {

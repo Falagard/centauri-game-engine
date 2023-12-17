@@ -42,6 +42,8 @@ import hxDaedalus.data.Vertex;
 import hxDaedalus.factories.RectMesh;
 import centauri.data.World;
 
+using Lambda;
+
 /**
  
 */
@@ -126,8 +128,15 @@ class Pathfinding extends SampleBase {
         World.load(worldText);
         _turtleDrawer._system = World.trails.get(trail01).trail;
 
-        //an obstacle using the Turtle commands
-        //_turtleDrawer._system = "-FFFF+FFF-FFFF+FFFFFFFF+++++FFFFFFF+FF+FFFFF-FFFF-FFFFFFFF-FF+FFFFFF-FFFFFF-FFFFFF+FF+FFFFFFFF+FFFFFFFFFF+FFFFFF-FF-FFFFFFFFFF+FFFFFFFFFFFFFF+FFFFFFFFFFFFFFFFFFFFFFF+FF+F+F-FFFFFFFFFFFFFFFFFFFFF-FFFFFFFFFF-FF+FF-FFFFFFFF+FF-FFFFFF-FFF-FFF+F";
+        //use lambda to filter only trail_segments that have a style of cave
+        var caveSegments = World.trail_segments.all.filter(function(segment) { 
+            return segment.style == Trail_segments_style.cave; 
+        });
+
+        for(segment in caveSegments) {
+            //apply search and replace to the system string
+            //
+        }
 
         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
         _turtleDrawer.beginMesh();

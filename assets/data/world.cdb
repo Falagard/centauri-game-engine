@@ -16,7 +16,39 @@
 			"lines": [
 				{
 					"id": "trail01",
-					"trail": "-F-+FF+FFFFFF+FFF+F+FF-FFFF-FFF-FFFFF++-F+FFFFF+--FF-FFFFF+FFF+FFFFF+--FF-FF-F+FFF+F+FF-F-FF++-F+FFF+F-FFF+FFFF+FFFF-F-F-F+F+F-FF+FFFFF"
+					"trail": "--F--++FF++FFFFFF++FFF++F++FF--FFFF--FFF--FFFFF++++--F++FFFFF++----FF--FFFFF++FFF++FFFFF++----FF--FF--F++FFF++F++FF--F--FF++++--F++FFF++F--FFF++FFFF++FFFF--F--F--F++F++F--FF++FFFFF"
+				}
+			],
+			"separators": [],
+			"props": {}
+		},
+		{
+			"name": "trail_segments",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id"
+				},
+				{
+					"typeStr": "1",
+					"name": "from_segment"
+				},
+				{
+					"typeStr": "5:cave,forest,building_wood",
+					"name": "style"
+				},
+				{
+					"typeStr": "1",
+					"name": "to_segment",
+					"display": null
+				}
+			],
+			"lines": [
+				{
+					"id": "cave_wall_01_f3",
+					"from_segment": "fff",
+					"to_segment": "f-f+f+f-f",
+					"style": 0
 				}
 			],
 			"separators": [],

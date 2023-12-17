@@ -49,8 +49,9 @@ class TurtleDrawer {
     private var _branchCounter:Int = 1;
     private var _colorsStack:Array<Color3> = [];
 
-    public var _turnRadius:Float = 90;
+    public var _turnRadius:Float = 45;
     public var _distance:Float = 10;
+    public var _distanceDiag:Float = 14.14214;
     public var _system:String = "";
     public var _meshes:Array<Mesh> = [];
         
@@ -233,6 +234,13 @@ class TurtleDrawer {
         mesh.color = _colorsStack.pop();
         _meshes.push(mesh);
     }
+
+    // public function setDistance(distance:Float) {
+    //     //change the distance 
+    //     _distance = distance;
+    //     //change the 45 degree movement distance to match
+    //     _distanceDiag = Math.sqrt((distance * distance) + (distance * distance));
+    // }
     
     public function evaluateSystem() {
 
@@ -242,6 +250,8 @@ class TurtleDrawer {
 
             if(item == "F") {
                 forward(_distance);
+            } else if(item == "f") {
+                forward(_distanceDiag);               
             } else if(item == "+") {
                 right(_turnRadius);
             } else if(item == "-") {
