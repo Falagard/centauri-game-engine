@@ -16,7 +16,11 @@
 			"lines": [
 				{
 					"id": "trail01",
-					"trail": "--F--++FF++FFFFFF++FFF++F++FF--FFFF--FFF--FFFFF++++--F++FFFFF++----FF--FFFFF++FFF++FFFFF++----FF--FF--F++FFF++F++FF--F--FF++++--F++FFF++F--FFF++FFFF++FFFF--F--F--F++F++F--FF++FFFFF"
+					"trail": "FF--FFFFF+ffff+FFFFFF+ff+FFFFFFFFFFFFF+fffffffff+FFFF+f+FFFFF"
+				},
+				{
+					"id": "trail02",
+					"trail": "-ff--ffff++ffffffff+FFFFFF++FFFFFF--FFFF++FFFFFFF++-ffffff+-f+FFFF+ff"
 				}
 			],
 			"separators": [],
@@ -31,7 +35,11 @@
 				},
 				{
 					"typeStr": "1",
-					"name": "from_segment"
+					"name": "description"
+				},
+				{
+					"typeStr": "2",
+					"name": "exterior"
 				},
 				{
 					"typeStr": "5:cave,forest,building_wood",
@@ -39,16 +47,138 @@
 				},
 				{
 					"typeStr": "1",
+					"name": "from_segment"
+				},
+				{
+					"typeStr": "1",
 					"name": "to_segment",
+					"display": null
+				},
+				{
+					"typeStr": "3",
+					"name": "num_alts"
+				},
+				{
+					"typeStr": "1",
+					"name": "to_segment_alt_1",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "to_segment_alt2",
 					"display": null
 				}
 			],
 			"lines": [
 				{
-					"id": "cave_wall_01_f3",
+					"id": "cave_ext_07",
+					"description": "left corner F",
+					"style": 0,
+					"from_segment": "F--F",
+					"to_segment": "F--F++++F++F++++X++F--FF--FF--F++",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_08",
+					"description": "right corner F",
+					"exterior": true,
+					"style": 0,
+					"from_segment": "F++F",
+					"to_segment": "F++F++++F--F--F--F++",
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_09",
+					"description": "left corner f",
+					"exterior": true,
+					"style": 0,
+					"from_segment": "f--f",
+					"to_segment": "+f--f++++f++f--f--ff--ff--f++",
+					"num_alts": 0,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": ""
+				},
+				{
+					"id": "cave_ext_10",
+					"description": "right corner f",
+					"exterior": true,
+					"style": 0,
+					"from_segment": "f++f",
+					"to_segment": "+f++f++++f--f++++++f--f++",
+					"num_alts": 0,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": ""
+				},
+				{
+					"id": "cave_ext_01",
+					"from_segment": "FFF",
+					"to_segment": "FFF++++FFF++++X++F--FFF--F++",
+					"style": 0,
+					"description": "F3",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_02",
+					"style": 0,
+					"from_segment": "FF",
+					"to_segment": "FF++++FF++++X++F--FF--F++",
+					"description": "F2",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_03",
+					"style": 0,
+					"from_segment": "F",
+					"to_segment": "F++++F++++X++F--F--F++",
+					"description": "F",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_04",
+					"style": 0,
 					"from_segment": "fff",
-					"to_segment": "f-f+f+f-f",
-					"style": 0
+					"to_segment": "fff++++fff++++X++f--fff--f++",
+					"description": "f3",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_05",
+					"style": 0,
+					"from_segment": "ff",
+					"to_segment": "ff++++ff++++X++f--ff--f++",
+					"description": "f2",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
+				},
+				{
+					"id": "cave_ext_06",
+					"description": "f",
+					"style": 0,
+					"from_segment": "f",
+					"to_segment": "f++++f++++X++f--f--f++",
+					"exterior": true,
+					"to_segment_alt_1": "",
+					"to_segment_alt2": "",
+					"num_alts": 0
 				}
 			],
 			"separators": [],

@@ -172,6 +172,8 @@ class Turtle extends SampleBase {
         }
 
         if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
+            //we should just implement undo and redo instead of this 
+
             //erase the last move, but first check if we need to switchDiagonal
             
             //get previous move

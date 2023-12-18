@@ -56,7 +56,7 @@ class Pathfinding extends SampleBase {
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
     private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
-    //private var _obstacleLinesMesh:com.babylonhx.mesh.Mesh = null;
+    private var _obstacleLinesMesh:com.babylonhx.mesh.Mesh = null;
     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
     private var _turtleDrawer:TurtleDrawer = null;
 
@@ -126,25 +126,61 @@ class Pathfinding extends SampleBase {
         //load value from world.cdb which is a castledb database 
         var worldText = Assets.getText("assets/data/world.cdb");
         World.load(worldText);
-        _turtleDrawer._system = World.trails.get(trail01).trail;
 
+        var trail = World.trails.get(trail02).trail;
+        var exteriorTrail = trail;
+
+        //trail = "[" + trail + "]";
+        
         //use lambda to filter only trail_segments that have a style of cave
         var caveSegments = World.trail_segments.all.filter(function(segment) { 
             return segment.style == Trail_segments_style.cave; 
         });
 
+        var segIdx:Int = 0;
+
+        //note - something isn't working correctly, need to figure it out. 
+
         for(segment in caveSegments) {
+
             //apply search and replace to the system string
-            //
+            
+            var toSegment:String = "";
+            
+            //replace every second character with no-op which means that it won't be found again for future search and replaces within the trail
+            for(i in 0...segment.to_segment.length) {
+                toSegment += segment.to_segment.charAt(i) + "X";
+            }
+
+            //replace each F with B, we'll do a search and replace at the end to fix this
+            toSegment = StringTools.replace(toSegment, "F", "B");
+            toSegment = StringTools.replace(toSegment, "f", "b");
+
+            trace("from " + segment.from_segment + " to " + toSegment);
+
+            exteriorTrail = StringTools.replace(exteriorTrail, segment.from_segment, toSegment);
+
+            segIdx++;
         }
+
+        //remove the no-op Xs and the Bb with Ff
+        exteriorTrail = StringTools.replace(exteriorTrail, "X", "");
+        exteriorTrail = StringTools.replace(exteriorTrail, "B", "F");
+        exteriorTrail = StringTools.replace(exteriorTrail, "b", "f");
+
+        trace(exteriorTrail);
+
+        //trail += exteriorTrail;
+
+        _turtleDrawer._system = exteriorTrail;
 
         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
         _turtleDrawer.beginMesh();
         _turtleDrawer.evaluateSystem();
         _turtleDrawer.endMesh();
         
-        _turtleDrawer._meshes[0].setEnabled(false); //don't draw it
-
+        _turtleDrawer._meshes[0].setEnabled(false);
+        
         //now we have each turtle position stored in _points, we're going to use this as our obstacle
 
         //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
@@ -247,12 +283,14 @@ class Pathfinding extends SampleBase {
                 mesh.color = Color3.Blue();
             }
 
+            mesh.freezeWorldMatrix();
             _obstacleLineMeshes.push(mesh);
 
             edgePoints = [];
         }
 
-        //_obstacleLinesMesh = com.babylonhx.mesh.Mesh.MergeMeshes(obstacleLineMeshes, true);
+        //_obstacleLinesMesh = com.babylonhx.mesh.Mesh.MergeMeshes(_obstacleLineMeshes, true);
+        //_obstacleLineMeshes = [];
 
         // we need an entity
         _entityAI = new EntityAI();
