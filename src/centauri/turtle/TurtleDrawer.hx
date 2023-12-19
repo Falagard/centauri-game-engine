@@ -44,6 +44,7 @@ class TurtleDrawer {
 
     var _scene:Scene = null;
     public var _currentTransform: TurtleTransform = null;
+    public var _penUpPosition: Vector3 = null;
     public var _points:Array<Vector3> = [];
     private var _transformsStack:Array<TurtleTransform> = [];
     private var _branchCounter:Int = 1;
@@ -148,17 +149,25 @@ class TurtleDrawer {
     }
 
     inline public function penDown() {
-        //if(!_penDown) {
-        //    _points.push(_currentTransform.position);
-        //}
+        if(!_penDown) {
+            //the position has changed since penup, then create the mesh and reset points
+            if(_penUpPosition != null && !_penUpPosition.equals(_currentTransform.position) && _points.length > 0) {
+                var mesh = Mesh.CreateLines("line", _points, _scene, false);
+                mesh.color = Color3.White();
+                _meshes.push(mesh);
+                _points = [];
+                _points.push(_currentTransform.position);
+            }
+        }
+
         _penDown = true;
     }
 
     inline public function penUp() {
-        //if(_penDown) {
-        //    endMesh();
-        //    _points = [];
-        //}
+        if(_penDown && _currentTransform != null) {
+            //store the position on penUp
+            _penUpPosition = _currentTransform.position.clone();
+        }
 
         _penDown = false;
     }
@@ -239,11 +248,11 @@ class TurtleDrawer {
     }
 
     public function endMesh() {
-        if(_points.length > 0) {
+        //if(_points.length > 0) {
             var mesh = Mesh.CreateLines("branch", _points, _scene, false);
             mesh.color = _colorsStack.pop();
             _meshes.push(mesh);
-        }
+        //}
     }
 
     // public function setDistance(distance:Float) {
