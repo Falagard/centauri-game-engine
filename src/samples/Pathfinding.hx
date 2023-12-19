@@ -137,10 +137,8 @@ class Pathfinding extends SampleBase {
             return segment.style == Trail_segments_style.cave; 
         });
 
-        var segIdx:Int = 0;
-
-        //note - something isn't working correctly, need to figure it out. 
-
+        //this is working now but our segment replacement isn't good data, need to work on it. 
+        //should replace all diagonal pieces first 
         for(segment in caveSegments) {
 
             //apply search and replace to the system string
@@ -156,11 +154,10 @@ class Pathfinding extends SampleBase {
             toSegment = StringTools.replace(toSegment, "F", "B");
             toSegment = StringTools.replace(toSegment, "f", "b");
 
-            trace("from " + segment.from_segment + " to " + toSegment);
+            //trace("from " + segment.from_segment + " to " + toSegment);
 
             exteriorTrail = StringTools.replace(exteriorTrail, segment.from_segment, toSegment);
 
-            segIdx++;
         }
 
         //remove the no-op Xs and the Bb with Ff

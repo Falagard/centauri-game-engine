@@ -148,10 +148,18 @@ class TurtleDrawer {
     }
 
     inline public function penDown() {
+        //if(!_penDown) {
+        //    _points.push(_currentTransform.position);
+        //}
         _penDown = true;
     }
 
     inline public function penUp() {
+        //if(_penDown) {
+        //    endMesh();
+        //    _points = [];
+        //}
+
         _penDown = false;
     }
     
@@ -221,8 +229,9 @@ class TurtleDrawer {
     public function beginMesh() {
         //_currentTransform = new TransformNode("tfm", _scene, true);
         _currentTransform = new TurtleTransform();
-        right(90); //starts us pointing upwards
 
+        right(90); //starts us pointing up
+        
         if(_penDown) {
             _points.push(_currentTransform.position);
         }
@@ -230,9 +239,11 @@ class TurtleDrawer {
     }
 
     public function endMesh() {
-        var mesh = Mesh.CreateLines("branch", _points, _scene, false);
-        mesh.color = _colorsStack.pop();
-        _meshes.push(mesh);
+        if(_points.length > 0) {
+            var mesh = Mesh.CreateLines("branch", _points, _scene, false);
+            mesh.color = _colorsStack.pop();
+            _meshes.push(mesh);
+        }
     }
 
     // public function setDistance(distance:Float) {
@@ -241,6 +252,11 @@ class TurtleDrawer {
     //     //change the 45 degree movement distance to match
     //     _distanceDiag = Math.sqrt((distance * distance) + (distance * distance));
     // }
+
+    public function reset() {
+        disposeMeshes();
+        penDown();
+    }
     
     public function evaluateSystem() {
 
@@ -274,6 +290,12 @@ class TurtleDrawer {
             }
             else if(item == "X" || item == "A") {
                 //no op
+            }
+            else if(item == "u") {
+                penUp();
+            }
+            else if(item == "j") {
+                penDown();
             } else {
                 //everything else is interpetted as forward
                 forward(_distance);

@@ -159,8 +159,7 @@ class Turtle extends SampleBase {
             //save to file 
             saveTrail();
         }
-
-        if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
+        else if(_keysDown[Keycodes.key_w] && !_keysHandled[Keycodes.key_w]) {
             //move forward
             if(_isDiagonal) {
                 _turtleDrawer._system += "f";
@@ -170,8 +169,7 @@ class Turtle extends SampleBase {
             anyChanged = true;
             _keysHandled[Keycodes.key_w] = true;
         }
-
-        if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
+        else if(_keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {
             //we should just implement undo and redo instead of this 
 
             //erase the last move, but first check if we need to switchDiagonal
@@ -180,32 +178,39 @@ class Turtle extends SampleBase {
             var previousMove = _turtleDrawer._system.substr(_turtleDrawer._system.length - 1);
             if(previousMove == "+" || previousMove == "-") {
                 switchDiagonal();
-            }
+            } 
             _turtleDrawer._system = _turtleDrawer._system.substr(0, _turtleDrawer._system.length - 1);
             anyChanged = true;
             _keysHandled[Keycodes.key_s] = true;
         }
-
-        if(_keysDown[Keycodes.key_d] && !_keysHandled[Keycodes.key_d]) {
+        else if(_keysDown[Keycodes.key_d] && !_keysHandled[Keycodes.key_d]) {
             _turtleDrawer._system += "+";
             anyChanged = true;
             _keysHandled[Keycodes.key_d] = true;
             switchDiagonal();
         }
-
-        if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
+        else if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
             _turtleDrawer._system += "-";
             anyChanged = true;
             _keysHandled[Keycodes.key_a] = true;
             switchDiagonal();
         }
+        else if(_keysDown[Keycodes.key_u] && !_keysHandled[Keycodes.key_u]) {
+            _turtleDrawer._system += "u";
+            anyChanged = true;
+            _keysHandled[Keycodes.key_u] = true;
+        }
+        else if(_keysDown[Keycodes.key_j] && !_keysHandled[Keycodes.key_j]) {
+            _turtleDrawer._system += "j";
+            anyChanged = true;
+            _keysHandled[Keycodes.key_j] = true;
+        }
 
         if(anyChanged) {
 
-            //destroy current meshes
-            _turtleDrawer.disposeMeshes();
-
             _elapsedTime = 0;
+
+            _turtleDrawer.reset();
 
             _turtleDrawer.beginMesh();
 
