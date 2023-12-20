@@ -42,7 +42,7 @@
 					"name": "exterior"
 				},
 				{
-					"typeStr": "5:cave,forest,building_wood",
+					"typeStr": "5:cave,cave2",
 					"name": "style"
 				},
 				{
