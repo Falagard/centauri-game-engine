@@ -149,9 +149,9 @@ class Turtle extends SampleBase {
         _elapsedTime += dt;
 
         //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-        // if(_elapsedTime > 300) {
-        //     _keysHandled = new Map();
-        // }
+        if(_elapsedTime > 300) {
+            _keysHandled = new Map();
+        }
 
         //check ctrl+s to save the trail 
         if(_keysDown[Keycodes.lctrl] && _keysDown[Keycodes.key_s] && !_keysHandled[Keycodes.key_s]) {

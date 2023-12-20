@@ -128,9 +128,6 @@ class Pathfinding extends SampleBase {
         World.load(worldText);
 
         var trail = World.trails.get(trail02).trail;
-        var exteriorTrail = trail;
-
-        //trail = "[" + trail + "]";
         
         //use lambda to filter only trail_segments that have a style of cave
         var caveSegments = World.trail_segments.all.filter(function(segment) { 
@@ -154,108 +151,113 @@ class Pathfinding extends SampleBase {
             toSegment = StringTools.replace(toSegment, "F", "B");
             toSegment = StringTools.replace(toSegment, "f", "b");
 
-            //trace("from " + segment.from_segment + " to " + toSegment);
-
-            exteriorTrail = StringTools.replace(exteriorTrail, segment.from_segment, toSegment);
+            trail = StringTools.replace(trail, segment.from_segment, toSegment);
 
         }
 
         //remove the no-op Xs and the Bb with Ff
-        exteriorTrail = StringTools.replace(exteriorTrail, "X", "");
-        exteriorTrail = StringTools.replace(exteriorTrail, "B", "F");
-        exteriorTrail = StringTools.replace(exteriorTrail, "b", "f");
+        trail = StringTools.replace(trail, "X", "");
+        trail = StringTools.replace(trail, "B", "F");
+        trail = StringTools.replace(trail, "b", "f");
 
-        trace(exteriorTrail);
-
-        //trail += exteriorTrail;
-
-        _turtleDrawer._system = exteriorTrail;
+        _turtleDrawer._system = trail;
 
         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
         _turtleDrawer.beginMesh();
         _turtleDrawer.evaluateSystem();
         _turtleDrawer.endMesh();
         
-        _turtleDrawer._meshes[0].setEnabled(false);
-        
-        //now we have each turtle position stored in _points, we're going to use this as our obstacle
-
-        //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
-
-        //get the extents of _points
-        var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
-        var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
-
-        for(point in _turtleDrawer._points) {
-            minPoint.x = Math.min(minPoint.x, point.x);
-            minPoint.y = Math.min(minPoint.y, point.y);
-            maxPoint.x = Math.max(maxPoint.x, point.x);
-            maxPoint.y = Math.max(maxPoint.y, point.y);
+        for(mesh in _turtleDrawer._meshes) {
+            mesh.setEnabled(false);
         }
 
-        //let's translate all points into positive and add a bit for a border 
-
-        //find the amount of x and y we need add so all points are positive
-        var deltaY:Float = 0 - minPoint.y;
-        var deltaX:Float = 0 - minPoint.x;
-
+        var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
+        var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
+        
         var border:Float = 50;
-
-        if(deltaY > 0) {
-            for(point in _turtleDrawer._points) {
-                point.y += deltaY + border; //move each position by this amount, plus add border 
+        
+        //now we have each turtle position stored in points, we're going to use this as our obstacle
+        //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
+        for(points in _turtleDrawer._points) {
+            
+            //get the extents of points
+            for(point in points) {
+                minPoint.x = Math.min(minPoint.x, point.x);
+                minPoint.y = Math.min(minPoint.y, point.y);
+                maxPoint.x = Math.max(maxPoint.x, point.x);
+                maxPoint.y = Math.max(maxPoint.y, point.y);
             }
         }
 
-        if(deltaX > 0) {
-            for(point in _turtleDrawer._points) {
-                point.x += deltaX + border;
+        for(points in _turtleDrawer._points) {
+            //let's translate all points into positive and add a bit for a border 
+
+            //find the amount of x and y we need add so all points are positive
+            var deltaY:Float = 0 - minPoint.y;
+            var deltaX:Float = 0 - minPoint.x;
+
+            if(deltaY > 0) {
+                for(point in points) {
+                    point.y += deltaY + border; //move each position by this amount, plus add border 
+                }
+            }
+
+            if(deltaX > 0) {
+                for(point in points) {
+                    point.x += deltaX + border;
+                }
             }
         }
 
         minPoint = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
         maxPoint = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 
-        //get our extents so we can pass these to hxdadelus for our obstacle boundaries
-        for(point in _turtleDrawer._points) {
-            minPoint.x = Math.min(minPoint.x, point.x);
-            minPoint.y = Math.min(minPoint.y, point.y);
-            maxPoint.x = Math.max(maxPoint.x, point.x);
-            maxPoint.y = Math.max(maxPoint.y, point.y);
+        for(points in _turtleDrawer._points) {
+            
+            //get our extents so we can pass these to hxdadelus for our obstacle boundaries
+            for(point in points) {
+                minPoint.x = Math.min(minPoint.x, point.x);
+                minPoint.y = Math.min(minPoint.y, point.y);
+                maxPoint.x = Math.max(maxPoint.x, point.x);
+                maxPoint.y = Math.max(maxPoint.y, point.y);
+            }
         }
 
         //Now for the pathfinding mesh
         //We'll use our extents maxPoint to build our boundary rectangle which starts at 0,0 and goes out to maxPoint.x + border and maxPoint.y + border
         _obstacleMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
 
-        //Add a constraint object - this will use our turtle obstacle 
-        var object:Object = new Object();
-        
-        object.coordinates = new Array<Float>();
+        for(points in _turtleDrawer._points) {
 
-        var prevPoint:Vector3 = null;
-        
-        //hxdaedalus allows you to insert an object with line segments so we'll pass our points as 
-        //a line segment between every two points
+            //Add a constraint object - this will use our turtle obstacle 
+            var object:Object = new Object();
+            
+            object.coordinates = new Array<Float>();
 
-        //for each set of points 
-        for(point in _turtleDrawer._points) {
-            if(prevPoint == null) {
+            var prevPoint:Vector3 = null;
+            
+            //hxdaedalus allows you to insert an object with line segments so we'll pass our points as 
+            //a line segment between every two points
+
+            //for each set of points 
+            for(point in points) {
+                if(prevPoint == null) {
+                    prevPoint = point;
+                    continue;
+                }
+
+                //from
+                object.coordinates.push(prevPoint.x);
+                object.coordinates.push(prevPoint.y);
+                //to
+                object.coordinates.push(point.x);
+                object.coordinates.push(point.y);
+
                 prevPoint = point;
-                continue;
             }
 
-            //from
-            object.coordinates.push(prevPoint.x);
-            object.coordinates.push(prevPoint.y);
-            //to
-            object.coordinates.push(point.x);
-            object.coordinates.push(point.y);
-
-            prevPoint = point;
+            _obstacleMesh.insertObject(object);
         }
-
-        _obstacleMesh.insertObject(object);
         
         //now we're going to create a mesh that will allow us to visualize the obstacle and walkable paths
         var vertsAndEdges = _obstacleMesh.getVerticesAndEdges();

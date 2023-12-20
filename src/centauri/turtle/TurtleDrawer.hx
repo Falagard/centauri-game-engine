@@ -45,7 +45,7 @@ class TurtleDrawer {
     var _scene:Scene = null;
     public var _currentTransform: TurtleTransform = null;
     public var _penUpPosition: Vector3 = null;
-    public var _points:Array<Vector3> = [];
+    public var _currentPoints:Array<Vector3> = [];
     private var _transformsStack:Array<TurtleTransform> = [];
     private var _branchCounter:Int = 1;
     private var _colorsStack:Array<Color3> = [];
@@ -55,7 +55,7 @@ class TurtleDrawer {
     public var _distanceDiag:Float = 14.14214;
     public var _system:String = "";
     public var _meshes:Array<Mesh> = [];
-        
+    public var _points:Array<Array<Vector3>> = [];
     
     private var _penDown:Bool = true;
 
@@ -144,19 +144,20 @@ class TurtleDrawer {
 
         if(_penDown) {
             //_points.push(_currentTransform.position);
-            _points.push(_currentTransform.position);
+            _currentPoints.push(_currentTransform.position);
         }
     }
 
     inline public function penDown() {
         if(!_penDown) {
             //the position has changed since penup, then create the mesh and reset points
-            if(_penUpPosition != null && !_penUpPosition.equals(_currentTransform.position) && _points.length > 0) {
-                var mesh = Mesh.CreateLines("line", _points, _scene, false);
+            if(_penUpPosition != null && !_penUpPosition.equals(_currentTransform.position) && _currentPoints.length > 0) {
+                var mesh = Mesh.CreateLines("line", _currentPoints, _scene, false);
                 mesh.color = Color3.White();
                 _meshes.push(mesh);
-                _points = [];
-                _points.push(_currentTransform.position);
+                _points.push(_currentPoints);
+                _currentPoints = [];
+                _currentPoints.push(_currentTransform.position);
             }
         }
 
@@ -194,13 +195,13 @@ class TurtleDrawer {
     }
 
     inline public function endBranch() {
-        var mesh = Mesh.CreateLines("branch", _points, _scene, false);
+        var mesh = Mesh.CreateLines("branch", _currentPoints, _scene, false);
         mesh.color = _colorsStack.pop();
-        _points = [];
+        _currentPoints = [];
         _currentTransform = _transformsStack.pop(); //pop the previous position back off the stack
 
         if(_penDown) {
-            _points.push(_currentTransform.position); //current position as our starting point
+            _currentPoints.push(_currentTransform.position); //current position as our starting point
         }
         _meshes.push(mesh);
     }
@@ -212,9 +213,10 @@ class TurtleDrawer {
         }
 
         _meshes = [];
-        _points = [];
+        _currentPoints = [];
         _colorsStack = [];
         _transformsStack = [];
+        _points = [];
 
         // if(_currentTransform != null) {
         //     _currentTransform.dispose();
@@ -242,14 +244,14 @@ class TurtleDrawer {
         right(90); //starts us pointing up
         
         if(_penDown) {
-            _points.push(_currentTransform.position);
+            _currentPoints.push(_currentTransform.position);
         }
         _colorsStack.push(Color3.White()); //not yet supported but this is for color changing
     }
 
     public function endMesh() {
         //if(_points.length > 0) {
-            var mesh = Mesh.CreateLines("branch", _points, _scene, false);
+            var mesh = Mesh.CreateLines("branch", _currentPoints, _scene, false);
             mesh.color = _colorsStack.pop();
             _meshes.push(mesh);
         //}
