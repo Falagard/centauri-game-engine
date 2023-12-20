@@ -167,6 +167,7 @@ class Pathfinding extends SampleBase {
         _turtleDrawer.evaluateSystem();
         _turtleDrawer.endMesh();
         
+        //hide all the meshes
         for(mesh in _turtleDrawer._meshes) {
             mesh.setEnabled(false);
         }
@@ -196,13 +197,13 @@ class Pathfinding extends SampleBase {
             var deltaY:Float = 0 - minPoint.y;
             var deltaX:Float = 0 - minPoint.x;
 
-            if(deltaY > 0) {
+            if(deltaY >= 0) {
                 for(point in points) {
                     point.y += deltaY + border; //move each position by this amount, plus add border 
                 }
             }
 
-            if(deltaX > 0) {
+            if(deltaX >= 0) {
                 for(point in points) {
                     point.x += deltaX + border;
                 }
