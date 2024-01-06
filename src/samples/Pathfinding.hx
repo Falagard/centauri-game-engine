@@ -128,7 +128,7 @@ class Pathfinding extends SampleBase {
         var worldText = Assets.getText("assets/data/world.cdb");
         World.load(worldText);
 
-        var trail = World.trails.get(trail02).trail;
+        var trail = World.trails.get(trail03).trail;
         
         //use lambda to filter only trail_segments that have a style of cave
         var caveSegments = World.trail_segments.all.filter(function(segment) { 
@@ -294,7 +294,6 @@ class Pathfinding extends SampleBase {
 
         _unconstrainedLinesMesh = new LinesMesh("MergedUnconstrained", _scene);
         com.babylonhx.mesh.Mesh.MergeMeshes(unconstrainedLineMeshes, true, true, _unconstrainedLinesMesh, false);
-
         _unconstrainedLinesMesh.color = Color3.Blue();
 
         // we need an entity
@@ -351,12 +350,6 @@ class Pathfinding extends SampleBase {
         }
 
         _pathMesh = null;
-
-        // for(mesh in _obstacleLineMeshes) {
-        //     mesh.dispose();
-        // }
-
-        // _obstacleLineMeshes = null;
 
         _constrainedLinesMesh.dispose();
         _constrainedLinesMesh = null;
