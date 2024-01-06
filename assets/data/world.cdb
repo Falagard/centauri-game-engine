@@ -38,6 +38,10 @@
 					"name": "description"
 				},
 				{
+					"typeStr": "4",
+					"name": "scale"
+				},
+				{
 					"typeStr": "2",
 					"name": "exterior"
 				},
@@ -79,7 +83,8 @@
 					"exterior": false,
 					"to_segment_alt_1": "",
 					"to_segment_alt2": "",
-					"num_alts": 0
+					"num_alts": 0,
+					"scale": 1
 				},
 				{
 					"id": "cave_int_02",
@@ -90,7 +95,8 @@
 					"to_segment": "FF++FF++F++F--F++F++uFF++FFj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				},
 				{
 					"id": "cave_int_03",
@@ -101,7 +107,8 @@
 					"to_segment": "F++F++F++F++uF++Fj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				},
 				{
 					"id": "cave_int_04",
@@ -112,7 +119,8 @@
 					"to_segment": "FFFF++F++FFFF++F++uFFFFj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				},
 				{
 					"id": "cave_int_05",
@@ -123,7 +131,8 @@
 					"to_segment": "FFF++F++FFF++F++uFFFj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				},
 				{
 					"id": "cave_int_06",
@@ -134,7 +143,8 @@
 					"to_segment": "FF++F++FF++F++uFFj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				},
 				{
 					"id": "cave_int_07",
@@ -145,7 +155,8 @@
 					"to_segment": "F++F++F++F++uFj",
 					"num_alts": 0,
 					"to_segment_alt_1": "",
-					"to_segment_alt2": ""
+					"to_segment_alt2": "",
+					"scale": 1
 				}
 			],
 			"separators": [],

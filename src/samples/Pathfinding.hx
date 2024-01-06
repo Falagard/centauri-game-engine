@@ -55,8 +55,9 @@ class Pathfinding extends SampleBase {
     private var _pathSampler:LinearPathSampler;
     private var _path:Array<Float>;
     private var _pathMesh:LinesMesh = null;
-    private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
-    private var _obstacleLinesMesh:com.babylonhx.mesh.Mesh = null;
+    //private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
+    private var _constrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
+    private var _unconstrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
     private var _turtleDrawer:TurtleDrawer = null;
 
@@ -134,15 +135,14 @@ class Pathfinding extends SampleBase {
             return segment.style == Trail_segments_style.cave; 
         });
 
-        //this is working now but our segment replacement isn't good data, need to work on it. 
-        //should replace all diagonal pieces first 
+        //replace each segment's from_segment with to_segment in trail
         for(segment in caveSegments) {
 
             //apply search and replace to the system string
             
             var toSegment:String = "";
             
-            //replace every second character with no-op which means that it won't be found again for future search and replaces within the trail
+            //replace every second character with no-op X which means that it won't be found again for future search and replaces within the trail
             for(i in 0...segment.to_segment.length) {
                 toSegment += segment.to_segment.charAt(i) + "X";
             }
@@ -177,7 +177,7 @@ class Pathfinding extends SampleBase {
         
         var border:Float = 50;
         
-        //now we have each turtle position stored in points, we're going to use this as our obstacle
+        //now we have each position stored in points, we're going to use this as our obstacle
         //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
         for(points in _turtleDrawer._points) {
             
@@ -265,9 +265,9 @@ class Pathfinding extends SampleBase {
 
         var edgePoints:Array<Vector3> = [];
 
-        //var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
-        _obstacleLineMeshes = [];
-
+        var constrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
+        var unconstrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
+        
         //create meshes from the edges 
         for(edge in vertsAndEdges.edges) {
             
@@ -276,21 +276,26 @@ class Pathfinding extends SampleBase {
             
             var mesh = com.babylonhx.mesh.Mesh.CreateLines("", edgePoints, _scene, false);
 
+            mesh.freezeWorldMatrix();
+
             //constrained edges are the obstacle edges and not constrained are the walkable edges
             if(edge.isConstrained) {
-                mesh.color = Color3.White();
+                constrainedLineMeshes.push(mesh);
             } else {
-                mesh.color = Color3.Blue();
+                unconstrainedLineMeshes.push(mesh);
             }
-
-            mesh.freezeWorldMatrix();
-            _obstacleLineMeshes.push(mesh);
-
+            
             edgePoints = [];
         }
 
-        //_obstacleLinesMesh = com.babylonhx.mesh.Mesh.MergeMeshes(_obstacleLineMeshes, true);
-        //_obstacleLineMeshes = [];
+        //we've created a mesh per line segment, which is very inefficient. Merge them together here. 
+        _constrainedLinesMesh = new LinesMesh("MergedConstrained", _scene);
+        com.babylonhx.mesh.Mesh.MergeMeshes(constrainedLineMeshes, true, true, _constrainedLinesMesh, false);
+
+        _unconstrainedLinesMesh = new LinesMesh("MergedUnconstrained", _scene);
+        com.babylonhx.mesh.Mesh.MergeMeshes(unconstrainedLineMeshes, true, true, _unconstrainedLinesMesh, false);
+
+        _unconstrainedLinesMesh.color = Color3.Blue();
 
         // we need an entity
         _entityAI = new EntityAI();
@@ -347,14 +352,16 @@ class Pathfinding extends SampleBase {
 
         _pathMesh = null;
 
-        for(mesh in _obstacleLineMeshes) {
-            mesh.dispose();
-        }
+        // for(mesh in _obstacleLineMeshes) {
+        //     mesh.dispose();
+        // }
 
-        _obstacleLineMeshes = null;
+        // _obstacleLineMeshes = null;
 
-        //_obstacleLinesMesh.dispose();
-        //_obstacleLinesMesh = null;
+        _constrainedLinesMesh.dispose();
+        _constrainedLinesMesh = null;
+        _unconstrainedLinesMesh.dispose();
+        _unconstrainedLinesMesh = null;
 
         _path = [];
 
