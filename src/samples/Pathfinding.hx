@@ -125,7 +125,7 @@ class Pathfinding extends SampleBase {
         _turtleDrawer.disposeMeshes();
 
         //load value from world.cdb which is a castledb database 
-        var worldText = Assets.getText("sample-assets/sampleWorld.cdb");
+        var worldText = Assets.getText("sample-assets/world.cdb");
         World.load(worldText);
 
         var trail = World.trails.get(trail03).trail;
