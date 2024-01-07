@@ -4,6 +4,8 @@ The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfin
 
 To get the engine running, we'll install Haxe (a programming language), Lime (a Haxe library that handles cross platform development), and Centauri Engine. We'll also install some dependencies and some editing tools. 
 
+While this may seem like a lot of steps to set up a game engine,
+
 # Install Haxe
 
 Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler.
@@ -21,18 +23,6 @@ Choose the defaults while installing.
 This will setup Haxe and tools in C:\HaxeToolkit by default. 
 
 That will also install Haxe library manager "haxelib" which you will use to install dependent libraries.
-
-# Install Dependencies
-
-Install these libraries that are used by Lime. This can be run from anywhere because these will be installed in C:\HaxeToolkit\haxe\lib
-
-Open a command prompt by pressing Windows Key + R and type "cmd"
-
-We'll use haxelib to install "format", "hxp", and "hxcpp" libraries. haxelib is like a package manager for haxe, similar to Nuget, npm, pip, etc. that are available for other languages. 
-
-`haxelib install format`
-`haxelib install hxp`
-`haxelib install hxcpp`
 
 # Install Git 
 
@@ -60,13 +50,23 @@ There's a fork of Lime here https://github.com/Falagard/lime and we're going to 
 
 Open a command prompt by pressing Windows Key + R and type "cmd" and change to a directory where you want to put your source code. 
 
-For example this will move to your C:\ drive and create a directory called "src" where you will put the Centauri Game Engine and Lime repositories. 
+For example this will move to your C:\ drive and create a directory called "src" where you will put the Centauri Game Engine, Lime and lime-samples repositories. 
 
 `cd c:\`
 
 `md src`
 
 `cd src`
+
+Next we'll install some Haxe libraries that are used by Lime. This can be run from anywhere because these will be installed in C:\HaxeToolkit\haxe\lib
+
+We'll use haxelib to install "format", "hxp", and "hxcpp" libraries. 
+
+haxelib is like a package manager for haxe, similar to Nuget, npm, pip, etc. that are available for other languages. 
+
+`haxelib install format`
+`haxelib install hxp`
+`haxelib install hxcpp`
 
 Now clone the Lime repository with the following:
 
@@ -142,11 +142,17 @@ We'll tell haxelib we want to add the "hxDaedalus" Haxe library from source in a
 
 `haxelib dev hxDaedalus hxDaedalus`
 
+## CastleDB 
+
 CastleDB is a structured static database that allows you to edit your game data using an editor that is downloadable from here http://castledb.org/ and provides you with a fast, easy and strictly typed way of accessing your game data. 
 
 Download the CastleDB editor from http://castledb.org/ 
 
-Then also install the CastleDB library using haxelib:
+The file should be available at http://castledb.org/file/castledb-1.5-win.zip
+
+If this disappears from the Internet for whatever reason, you can get the source here https://github.com/ncannasse/castle and follow the instructions to build it. If github goes offline, we have bigger problems to worry about. 
+
+Then also install the CastleDB Haxe library using haxelib:
 
 `haxelib install castle 1.6.1`
 
