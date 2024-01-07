@@ -18,7 +18,7 @@
 
 	<undefine name="lime-opengl" if="windows"/>
 	<define name="lime-opengles" if="windows" />
-			
+				
 	<assets path="assets" exclude="*.svg" />
 	<assets path="sample-assets" />
 	<icon path="assets/lime.svg" />
