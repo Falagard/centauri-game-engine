@@ -2,51 +2,121 @@
 
 The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, (and eventually artificial intelligence systems, entity component systems, and more) to create a full game engine. 
 
-To get the engine running, do the following:
-
-If you don't have it already, install git. 
-
-https://git-scm.com/downloads
-
-Open a command prompt by pressing Windows Key + R and type "cmd" 
-
-Then in a directory you want to install Centauri and the following:
-
-`git clone --recurse-submodules https://github.com/Falagard/centauri-game-engine`
-
-This will bring down the source code of the engine and any dependent repositories it uses, which are hxDaedalus and BabylonHx.  
+To get the engine running, we'll install Haxe (a programming language), Lime (a Haxe library that handles cross platform development), and Centauri Engine. We'll also install some dependencies and some editing tools. 
 
 # Install Haxe
 
-Haxe is a language that is easy to learn and uses a syntax similar to Javascript that transpiles to other languages such as C++, Java, Javascript, etc. which means that you you can write code in Haxe and create software that run on almost any platform, including consoles, Windows, Linux, mobile devices such as Android, iOS and even browsers. 
+Haxe is an open source high-level strictly-typed programming language with a fast optimizing cross-compiler.
+
+Haxe is easy to learn and uses a syntax similar to Javascript that cross compiles to other languages such as C++, JavaScript, PHP, C#, Java, Python, and Lua. This means that you you can write code in Haxe and create a game that can run on almost any platform including game consoles (Xbox Series X/S, Playstation 5 and Nintendo Switch - but you'll need the appropriate development toolkits and some customization will be required), Windows, Linux, mobile devices such as Android, iOS and even browsers.
+
+Currently Centauri Game Engine is targeting Windows and game consoles but it should be able to run on all the platforms above with some work. 
 
 To get started you'll need to download and install Haxe from here:
 
 https://haxe.org/download/
 
-That will also install Haxe library manager "haxelib" which you will use to install necessary libraries/frameworks.
+Choose the defaults while installing. 
+
+This will setup Haxe and tools in C:\HaxeToolkit by default. 
+
+That will also install Haxe library manager "haxelib" which you will use to install dependent libraries.
 
 # Install Dependencies
 
-Then you'll have to install runtime files for c++ backend for Haxe - HXCPP, execute from command line:
+Install these libraries that are used by Lime. This can be run from anywhere because these will be installed in C:\HaxeToolkit\haxe\lib
 
+Open a command prompt by pressing Windows Key + R and type "cmd"
+
+We'll use haxelib to install "format", "hxp", and "hxcpp" libraries. haxelib is like a package manager for haxe, similar to Nuget, npm, pip, etc. that are available for other languages. 
+
+`haxelib install format`
+`haxelib install hxp`
 `haxelib install hxcpp`
 
-Next we'll install Lime, (for more information see https://lime.openfl.org/) which is a framework that includes tools and an libraries for building Haxe applications, including an OpenGL abstraction layer we use for rendering. 
+# Install Git 
 
-To install Lime execute from cmd line:
+If you don't have it already, install git. 
 
-`haxelib install lime`
+https://git-scm.com/downloads
 
-and after that execute:
+This will probably meaning clicking the Download for Windows button and 64-bit Git for Windows Setup.
+
+Use the defaults for all options during installation. 
+
+# Visual Studio Community Edition
+
+To build Lime from source, you'll need to install Visual Studio Community Edition which is free, with the Desktop Development with C++ option. 
+
+https://visualstudio.microsoft.com/vs/community/
+
+Run the installer and choose the "Desktop Development with C++" in the list of options. 
+
+# Setup Lime
+
+Next we'll install Lime, (for more information see https://lime.openfl.org/) which is a framework that includes tools and an libraries for building cross platform Haxe applications, including an OpenGL abstraction layer we use for rendering. 
+
+There's a fork of Lime here https://github.com/Falagard/lime and we're going to build Lime from source. 
+
+Open a command prompt by pressing Windows Key + R and type "cmd" and change to a directory where you want to put your source code. 
+
+For example this will move to your C:\ drive and create a directory called "src" where you will put the Centauri Game Engine and Lime repositories. 
+
+`cd c:\`
+
+`md src`
+
+`cd src`
+
+Now clone the Lime repository with the following:
+
+`git clone --recursive https://github.com/falagard/lime`
+
+Then enter the following which tells haxelib we want to add the "lime" Haxe library from source in a directory called "lime" 
+
+`haxelib dev lime lime`
+
+Do the same for lime-samples:
+
+`git clone https://github.com/Falagard/lime-samples`
+
+`haxelib dev lime-samples lime-samples`
+
+## Setup Hashlink 
+
+Hashlink is a virtual machine for Haxe (see https://hashlink.haxe.org/ for more information) and was created by the same person who created Haxe, Nicolas Cannasse, who also has a video game company that has created several games.  
+
+Hashlink is the easiest way to quickly develop Haxe games on Windows. This is because compiling to the Hashlink target is faster than compiling to the Windows C++ target when making code changes, and is great for daily development. Then when you're ready you can use compile to HashLink/C code, compiled with a native compiler to a regular executable. 
+
+This mode results in the best performance, so it is suitable for final releases (and can target Game Consoles). See this for more information https://haxe.org/manual/target-hl-c-compilation.html
+
+Run the following commands:
+
+This will rebuild the windows tools used by Lime:
+
+`haxelib run lime rebuild windows`
+
+This will setup lime so it can be run from the command line:
 
 `haxelib run lime setup`
 
-When Lime is installed and configured you'll have to install dev tools for each platform you wish to build BabylonHx for, so if you want to build for Windows you should run this from cmd line:
+This sets up hashlink: 
 
-`haxelib run lime setup windows`
+`lime setup hashlink`
 
-This will start download process of VisualStudio and it will install and setup everything for you (will it? - needs testing). For every other platform the process is the same but has not been fully tested yet. 
+This rebuilds the version of hashlink used by Lime:
+
+`lime rebuild hashlink`
+
+# Clone the Repository
+
+Open a command prompt by pressing Windows Key + R and type "cmd" 
+
+Then in a directory you want to install Centauri enter the following:
+
+`git clone --recurse-submodules https://github.com/Falagard/centauri-game-engine`
+
+This will bring down the source code of the game engine and any dependent repositories it uses, which are hxDaedalus and BabylonHx. 
 
 # Setup Submodules with Haxelib
 
@@ -60,7 +130,7 @@ We still need to tell Haxe where to find this BabylonHX, so change into the dire
 
 `cd centauri-game-engine`
 
-Then enter the follow which tells haxelib it can find the BabylonHX directory in a folder below centauri-game-engine called "babylonhx"
+Then enter the following which tells haxelib we want to add the "BabylonHX" Haxe library from source in a directory called "babylonhx" under the "centauri-game-engine" directory. 
 
 `haxelib dev BabylonHX babylonhx`
 
@@ -68,15 +138,21 @@ You should see something that says "Development directory set to C:\users\yourna
 
 hxDaedalus is a pathfinding library which can be used to tell AI or players where they can move. 
 
-We'll tell haxlib it can find the hxDaedalus directory in a folder below centauri-game-engine called "hxDaedalus"
+We'll tell haxelib we want to add the "hxDaedalus" Haxe library from source in a directory called "hxDaedalus" 
 
 `haxelib dev hxDaedalus hxDaedalus`
 
 CastleDB is a structured static database that allows you to edit your game data using an editor that is downloadable from here http://castledb.org/ and provides you with a fast, easy and strictly typed way of accessing your game data. 
 
+Download the CastleDB editor from http://castledb.org/ 
+
+Then also install the CastleDB library using haxelib:
+
 `haxelib install castle 1.6.1`
 
 # Install Visual Studio Code and Extensions
+
+Visual Studio Code is what we're going to use to write game code in Haxe. (We installed Visual Studio Express just to compile Lime)
 
 Download and install Visual Studio Code, the Lime Extension, and the Hashlink Debugger. 
 
@@ -86,14 +162,25 @@ https://marketplace.visualstudio.com/items?itemName=openfl.lime-vscode-extension
 
 https://marketplace.visualstudio.com/items?itemName=HaxeFoundation.haxe-hl
 
-
 # Open the Project and run the first sample 
 
-Open the project by opening the location of the centauri-game-engine directory in Visual Studio Code. 
+Open the project by clicking Open Folder and browse to the directory where you cloned the repository, for example C:\Src\centauri-game-engine
+
+When asked "Do you trust the authors of the files in this folder?" click "Yes I trust the authors"
 
 In the bottom left of the window, to the right of the word Lime with the settings icon, select the Lime Target Configuration and change it to HashLink. 
 
+## More information about Targets
+
+When you're compiling a Lime application from Visual Studio Code you need to choose a target - HTML5, Android, Windows, etc or Hashlink.
+
+* HTML5 generates JavaScript and runs in a browser. 
+* Android generates Java and requires the Android SDK. 
+* Windows generates C++ and requires the HXCPP Visual Studio Code Extension. 
+* Hashlink generates HL bytecode and is run by hl.exe 
+
+We suggest using Hashlink as the target on Windows because it compiles fast.
+
 Hit F5 to run the sample.
 
-The sample can be changed by going into MainLime.hx and changing onPreloadComplete 
-    new samples.Pathfinding(scene);
+
