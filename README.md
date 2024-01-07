@@ -182,11 +182,39 @@ When you're compiling a Lime application from Visual Studio Code you need to cho
 
 * HTML5 generates JavaScript and runs in a browser. 
 * Android generates Java and requires the Android SDK. 
-* Windows generates C++ and requires the HXCPP Visual Studio Code Extension. 
-* Hashlink generates HL bytecode and is run by hl.exe 
+* Windows generates C++ and requires the HXCPP Visual Studio Code Extension to debug. 
+* Hashlink generates HL bytecode and is run by hl.exe and requires the Hashlink Debugger Visual Studio Code Extension to debug.  
 
 We suggest using Hashlink as the target on Windows because it compiles fast.
 
-Hit F5 to run the sample.
+Hit F5 to run the sample. If all goes well the first sample will run. 
+
+# What's Next?
+
+See the wiki for more information on how to start working on your first game. 
+
+# How do I uninstall the Centauri Game Engine?
+
+You can delete the directories for the repositories. If you followed the instructions above, these will be:
+
+* C:\src\centauri-game-engine
+* C:\src\lime
+* C:\src\lime-samples
+
+You can uninstall the Haxe toolkit using the uninstaller in 
+
+C:\HaxeToolkit\Uninstall.exe
+
+You can uninstall Visual Studio Community 2022 and Visual Studio Code from Add or Remove Programs by hitting Windows Key + I then choose Apps then Installed Apps
+
+
+
+
+
+
+
+
+
+
 
 
