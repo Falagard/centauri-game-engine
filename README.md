@@ -153,6 +153,8 @@ We'll tell haxelib we want to add the "hxDaedalus" Haxe library from source in a
 
 `haxelib dev hxDaedalus hxDaedalus`
 
+
+
 ## CastleDB 
 
 CastleDB is a structured static database that allows you to edit your game data using an editor that is downloadable from here http://castledb.org/ and provides you with a fast, easy and strictly typed way of accessing your game data. 
@@ -198,7 +200,7 @@ Hit Ctrl + Shift + B to build the Hashlink Debug target.
 
 Hit F5 to run the sample. If all goes well the first sample will run. 
 
-# Trouble Shooting
+# Troubleshooting
 
 
 

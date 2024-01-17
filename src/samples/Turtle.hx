@@ -62,7 +62,7 @@ class Turtle extends SampleBase {
             _keysHandled[keyCode] = false;
 		};
 
-        _turtleDrawer = new TurtleDrawer(_scene);
+        _turtleDrawer = new TurtleDrawer(_scene, true);
 
 		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
         _camera.setPosition(new Vector3(0, 0, 400));
@@ -233,7 +233,17 @@ class Turtle extends SampleBase {
         //We're going to save out the assets/temp folder under the application bin directory. 
         //This allows us to copy the string out of turtle_trails.txt and store it in a castledb database file, for exmaple. 
         FileSystem.createDirectory("assets/temp/");
-        sys.io.File.saveContent("assets/temp/turtle_trails.txt", _turtleDrawer._system);
+
+        //these rotations negate each other, so just remove them
+        var searches = ["---+++", "+++---", "--++", "++--", "+-", "-+"];
+        
+        var simplifiedSystem = _turtleDrawer._system;
+
+        for(search in searches) {
+            simplifiedSystem = StringTools.replace(simplifiedSystem, search, "");
+        }
+
+        sys.io.File.saveContent("assets/temp/turtle_trails.txt", simplifiedSystem);
         #end
     }
 }

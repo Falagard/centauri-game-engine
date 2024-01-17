@@ -1,5 +1,6 @@
 package centauri.turtle;
 
+import com.babylonhx.loading.plugins.BabylonFileLoader;
 import com.babylonhx.math.Matrix;
 import com.babylonhx.math.Quaternion;
 import com.babylonhx.engine.EngineCapabilities.WEBGL_compressed_texture_s3tc;
@@ -43,6 +44,8 @@ class TurtleTransform {
 class TurtleDrawer {
 
     var _scene:Scene = null;
+    var _createMeshes:Bool = true;
+
     public var _currentTransform: TurtleTransform = null;
     public var _penUpPosition: Vector3 = null;
     public var _currentPoints:Array<Vector3> = [];
@@ -66,7 +69,9 @@ class TurtleDrawer {
     private static var _invLocalWorldTemp:Matrix = Matrix.Zero();
     private static var _positionLocalTemp:Vector3 = Vector3.Zero();
 
-    public function new(scene:Scene) {
+
+    public function new(scene:Scene, createMeshes:Bool) {
+        _createMeshes = createMeshes;
         _scene = scene;
     }
 
@@ -96,7 +101,6 @@ class TurtleDrawer {
 
     inline public function DegreesToRadians(degrees:Float) {
         return Math.PI / 180 * degrees;
-        //Angle.FromDegrees(degrees).radians()
     }
 
     inline public function translate(axis:Vector3, distance:Float) {
@@ -143,7 +147,6 @@ class TurtleDrawer {
         translate(Axis.X, amount);
 
         if(_penDown) {
-            //_points.push(_currentTransform.position);
             _currentPoints.push(_currentTransform.position);
         }
     }
@@ -152,9 +155,11 @@ class TurtleDrawer {
         if(!_penDown) {
             //the position has changed since penup, then create the mesh and reset points
             if(_penUpPosition != null && !_penUpPosition.equals(_currentTransform.position) && _currentPoints.length > 0) {
-                var mesh = Mesh.CreateLines("line", _currentPoints, _scene, false);
-                mesh.color = Color3.White();
-                _meshes.push(mesh);
+                if(_createMeshes) {                
+                    var mesh = Mesh.CreateLines("line", _currentPoints, _scene, false);
+                    mesh.color = Color3.White();
+                    _meshes.push(mesh);
+                }
                 _points.push(_currentPoints);
                 _currentPoints = [];
                 _currentPoints.push(_currentTransform.position);
@@ -175,7 +180,6 @@ class TurtleDrawer {
     
     inline public function beginBranch() {
         //create a copy of current transform
-        //var tempTfm = new TransformNode("tfm" + _branchCounter); 
         var tempTfm = new TurtleTransform();
         tempTfm.position = _currentTransform.position.clone();
         tempTfm.rotationQuaternion = _currentTransform.rotationQuaternion.clone();        
@@ -195,18 +199,26 @@ class TurtleDrawer {
     }
 
     inline public function endBranch() {
-        var mesh = Mesh.CreateLines("branch", _currentPoints, _scene, false);
-        mesh.color = _colorsStack.pop();
+        var mesh:com.babylonhx.mesh.LinesMesh = null;
+        var color = _colorsStack.pop();
+
+        if(_createMeshes) {
+            mesh = Mesh.CreateLines("branch", _currentPoints, _scene, false);
+            mesh.color = color;
+        }
         _currentPoints = [];
         _currentTransform = _transformsStack.pop(); //pop the previous position back off the stack
 
         if(_penDown) {
             _currentPoints.push(_currentTransform.position); //current position as our starting point
         }
-        _meshes.push(mesh);
+
+        if(_createMeshes) {
+            _meshes.push(mesh);
+        }
     }
 
-    public function disposeMeshes() {
+    public function clear() {
         //destroy current mesh and rebuild from scratch
         for(mesh in _meshes) {
             mesh.dispose();
@@ -217,10 +229,10 @@ class TurtleDrawer {
         _colorsStack = [];
         _transformsStack = [];
         _points = [];
+    }
 
-        // if(_currentTransform != null) {
-        //     _currentTransform.dispose();
-        // }
+    public function dispose() {
+        clear();
     }
 
     public function showMeshes() {
@@ -250,11 +262,13 @@ class TurtleDrawer {
     }
 
     public function endMesh() {
-        //if(_points.length > 0) {
+        var color = _colorsStack.pop();
+
+        if(_createMeshes) {
             var mesh = Mesh.CreateLines("branch", _currentPoints, _scene, false);
-            mesh.color = _colorsStack.pop();
+            mesh.color = color;
             _meshes.push(mesh);
-        //}
+        }
     }
 
     // public function setDistance(distance:Float) {
@@ -265,7 +279,7 @@ class TurtleDrawer {
     // }
 
     public function reset() {
-        disposeMeshes();
+        clear();
         penDown();
     }
     

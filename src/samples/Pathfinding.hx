@@ -51,6 +51,7 @@ class Pathfinding extends SampleBase {
 
     private var _obstacleMesh : Mesh;
     private var _entityAI:EntityAI;
+    //private var _entityAIs:Array<EntityAI>;
     private var _pathfinder:PathFinder;
     private var _pathSampler:LinearPathSampler;
     private var _path:Array<Float>;
@@ -100,29 +101,31 @@ class Pathfinding extends SampleBase {
 		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
 		_light.diffuse = Color3.FromInt(0xf68712);
 
-        _turtleDrawer = new TurtleDrawer(_scene);
+        //make a little triangle we'll use for our entity position during pathfinding
+        var arrowDrawer = new TurtleDrawer(_scene, true);
+        
+        arrowDrawer.penUp();
+        arrowDrawer.beginMesh();
+        arrowDrawer.left(180);
+        arrowDrawer.forward(5);
+        arrowDrawer.right(180);
+        arrowDrawer.penDown();
+        arrowDrawer.forward(10);
+        arrowDrawer.left(120);
+        arrowDrawer.forward(10);
+        arrowDrawer.left(120);
+        arrowDrawer.forward(10);
+        arrowDrawer.left(120);
+        arrowDrawer.forward(10);
+        arrowDrawer.endMesh();
 
-        //make a little triangle we'll use for our entity position
-        _turtleDrawer.penUp();
-        _turtleDrawer.beginMesh();
-        _turtleDrawer.left(180);
-        _turtleDrawer.forward(5);
-        _turtleDrawer.right(180);
-        _turtleDrawer.penDown();
-        _turtleDrawer.forward(10);
-        _turtleDrawer.left(120);
-        _turtleDrawer.forward(10);
-        _turtleDrawer.left(120);
-        _turtleDrawer.forward(10);
-        _turtleDrawer.left(120);
-        _turtleDrawer.forward(10);
-        _turtleDrawer.endMesh();
-
-        //grab the current mesh so it doesn't get disposed when we call disposeMeshes()
-        _arrowMesh = _turtleDrawer._meshes[0];
-        _turtleDrawer._meshes = [];
-
-        _turtleDrawer.disposeMeshes();
+        //grab the current mesh so it doesn't get disposed when we call dispose()
+        _arrowMesh = arrowDrawer._meshes[0];
+        arrowDrawer._meshes = [];
+        arrowDrawer.dispose();
+        arrowDrawer = null;
+        
+        _turtleDrawer = new TurtleDrawer(_scene, false); //pass false for createMeshes
 
         //load value from world.cdb which is a castledb database 
         var worldText = Assets.getText("sample-assets/world.cdb");
@@ -139,6 +142,7 @@ class Pathfinding extends SampleBase {
         for(segment in caveSegments) {
 
             //apply search and replace to the system string
+            trace(segment.from_segment);
             
             var toSegment:String = "";
             
@@ -167,10 +171,8 @@ class Pathfinding extends SampleBase {
         _turtleDrawer.evaluateSystem();
         _turtleDrawer.endMesh();
         
-        //hide all the meshes
-        for(mesh in _turtleDrawer._meshes) {
-            mesh.setEnabled(false);
-        }
+        //hide all the meshes (does nothing if we have no meshes)
+        _turtleDrawer.hideMeshes();
 
         var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
         var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
@@ -296,17 +298,31 @@ class Pathfinding extends SampleBase {
         com.babylonhx.mesh.Mesh.MergeMeshes(unconstrainedLineMeshes, true, true, _unconstrainedLinesMesh, false);
         _unconstrainedLinesMesh.color = Color3.Blue();
 
-        // we need an entity
         _entityAI = new EntityAI();
-        // set radius as size for your entity
         _entityAI.radius = 4;
-        // set a position
         _entityAI.x = 20;
         _entityAI.y = 20;
-        
+
+        // _entityAIs = [];
+
+        // for(i in 0...10) {
+        //     // we need an entity
+        //     var entityAI = new EntityAI();
+        //     // set radius as size for your entity
+        //     entityAI.radius = 4;
+            
+        //     //random position between minPoint and maxPoint
+
+        //     // set a position
+        //     entityAI.x = 20;
+        //     entityAI.y = 20;
+
+        //     _entityAIs.push(entityAI);
+        // }
+
         // now configure the pathfinder
         _pathfinder = new PathFinder();
-        _pathfinder.entity = _entityAI;  // set the entity  
+        //_pathfinder.entity = _entityAI;  // set the entity  
         _pathfinder.mesh = _obstacleMesh;
 
         // we need a vector to store the path
@@ -344,6 +360,9 @@ class Pathfinding extends SampleBase {
     public override function deactivate() {
 
         super.deactivate();
+
+        _turtleDrawer.dispose();
+        _turtleDrawer = null;
 
         if(_pathMesh != null) {
             _pathMesh.dispose();
@@ -383,8 +402,15 @@ class Pathfinding extends SampleBase {
     //Perform our updates
     public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
             
+        //performs obstacle updates if necessary
         _obstacleMesh.updateObjects();
 
+        var dt = scene.getEngine().getDeltaTime();
+
+        _pathSampler.samplingDistance = dt * 0.1;
+
+        //this does really simple multiple frame movement, moving by pathSampler.samplingDistance each frame
+        //we could and should change the sampling distance based on delta time (todo)
         if(_pathSampler.hasNext) {
             _pathSampler.next();
             _arrowMesh.position.x = _entityAI.x;
@@ -392,7 +418,6 @@ class Pathfinding extends SampleBase {
             _arrowMesh.position.z = 0;
         }
 
-        var dt = scene.getEngine().getDeltaTime();
         _elapsedTime += dt;
 
         //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
@@ -421,8 +446,10 @@ class Pathfinding extends SampleBase {
         //need to get intersection of screen x,y with a plane so we can get the world space position
         var world = Matrix.Identity();
 
+        //picking ray is the x,y position in screen space transformed into world space by the world matrix 
         var ray = this._scene.createPickingRay(evt.x, evt.y, world);
 
+        //our plane is defined in world space from a position and a normal (perpendicular vector) which in this case is simple a Vector3 with z = 1
         var plane:Plane = Plane.FromPositionAndNormal(Vector3.Zero(), Vector3.Forward());
 
         //intersect a plane 
@@ -430,7 +457,11 @@ class Pathfinding extends SampleBase {
         
         if(distance > Math.NEGATIVE_INFINITY)
         {
+            //get the hit position in world space
             var hitPos = ray.origin.add(ray.direction.multiplyByFloats(distance, distance, distance));
+
+            //find a path 
+            _pathfinder.entity = _entityAI;  // set the entity  
             _pathfinder.findPath(hitPos.x, hitPos.y, _path );
 
             _pathSampler.reset();
