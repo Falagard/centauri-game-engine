@@ -49,7 +49,7 @@ using Lambda;
 */
 class Pathfinding extends SampleBase {
 
-    private var _obstacleMesh : Mesh;
+    private var _obstacleMesh:Mesh;
     private var _entityAI:EntityAI;
     //private var _entityAIs:Array<EntityAI>;
     private var _pathfinder:PathFinder;
@@ -127,16 +127,20 @@ class Pathfinding extends SampleBase {
         
         _turtleDrawer = new TurtleDrawer(_scene, false); //pass false for createMeshes
 
-        //load value from world.cdb which is a castledb database 
+        //load value from world.cdb which is a castledb database - you can use the CastleDB editor to open it up and see the data
         var worldText = Assets.getText("sample-assets/world.cdb");
         World.load(worldText);
 
+        //get a trail from the trails sheet
+        //a trail is a series of turtle commands, F for forward, - for turn left, + for turn right that defines a path 
         var trail = World.trails.get(trail03).trail;
         
         //use lambda to filter only trail_segments that have a style of cave
         var caveSegments = World.trail_segments.all.filter(function(segment) { 
             return segment.style == Trail_segments_style.cave; 
         });
+
+        //we're going to take our simple trail and replace parts of it with more complex turtle commands from trail_segments 
 
         //replace each segment's from_segment with to_segment in trail
         for(segment in caveSegments) {
@@ -303,23 +307,6 @@ class Pathfinding extends SampleBase {
         _entityAI.x = 20;
         _entityAI.y = 20;
 
-        // _entityAIs = [];
-
-        // for(i in 0...10) {
-        //     // we need an entity
-        //     var entityAI = new EntityAI();
-        //     // set radius as size for your entity
-        //     entityAI.radius = 4;
-            
-        //     //random position between minPoint and maxPoint
-
-        //     // set a position
-        //     entityAI.x = 20;
-        //     entityAI.y = 20;
-
-        //     _entityAIs.push(entityAI);
-        // }
-
         // now configure the pathfinder
         _pathfinder = new PathFinder();
         //_pathfinder.entity = _entityAI;  // set the entity  
@@ -410,7 +397,6 @@ class Pathfinding extends SampleBase {
         _pathSampler.samplingDistance = dt * 0.1;
 
         //this does really simple multiple frame movement, moving by pathSampler.samplingDistance each frame
-        //we could and should change the sampling distance based on delta time (todo)
         if(_pathSampler.hasNext) {
             _pathSampler.next();
             _arrowMesh.position.x = _entityAI.x;

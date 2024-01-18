@@ -2,7 +2,7 @@
 
 The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, (and eventually artificial intelligence systems, entity component systems, and more) to create a full game engine. 
 
-To get the engine running, we'll install Haxe (a programming language), Lime (a Haxe library that handles cross platform development), and Centauri Engine. We'll also install some dependencies and some editing tools. 
+To get the engine running, we'll install Haxe (a programming language), Lime (a Haxe library that handles cross platform development), Hashlink (a virtual machine) and Centauri Engine. We'll also install some dependencies and some editing tools. 
 
 While this may seem like a lot of steps to set up a game engine, this is an open source project through and through. There are no hidden steps - everything is in front of you.
 
@@ -153,7 +153,7 @@ We'll tell haxelib we want to add the "hxDaedalus" Haxe library from source in a
 
 `haxelib dev hxDaedalus hxDaedalus`
 
-
+`haxelib dev seedyrng seedyrng`
 
 ## CastleDB 
 
