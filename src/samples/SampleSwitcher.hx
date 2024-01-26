@@ -20,6 +20,7 @@ class SampleSwitcher {
         _samples = new Array<SampleBase>();
         _samples.push(new Turtle(scene));
         _samples.push(new Pathfinding(scene));
+        _samples.push(new BehaviorTree(scene));
         _currentSample = _samples[0];
         _currentSample.activate();
         
@@ -44,6 +45,11 @@ class SampleSwitcher {
             if(_keysDown[Keycodes.key_2] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_2]) {
                 changeSample(1);
                 _keysHandled[Keycodes.key_2] = true;
+            }
+
+            if(_keysDown[Keycodes.key_3] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_3]) {
+                changeSample(2);
+                _keysHandled[Keycodes.key_3] = true;
             }
         });
     }

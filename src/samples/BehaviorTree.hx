@@ -47,7 +47,7 @@ using Lambda;
 /**
  
 */
-class Pathfinding extends SampleBase {
+class BehaviorTree extends SampleBase {
 
     private var _obstacleMesh:Mesh;
     private var _entityAI:EntityAI;
@@ -133,7 +133,7 @@ class Pathfinding extends SampleBase {
 
         //get a trail from the trails sheet
         //a trail is a series of turtle commands, F for forward, - for turn left, + for turn right that defines a path 
-        var trail = World.trails.get(trail03).trail;
+        var trail = World.trails.get(trail02).trail;
         
         //use lambda to filter only trail_segments that have a style of cave
         var caveSegments = World.trail_segments.all.filter(function(segment) { 
@@ -394,7 +394,7 @@ class Pathfinding extends SampleBase {
 
         var dt = scene.getEngine().getDeltaTime();
 
-        _pathSampler.samplingDistance = dt * 0.05;
+        _pathSampler.samplingDistance = dt * 0.1;
 
         //this does really simple multiple frame movement, moving by pathSampler.samplingDistance each frame
         if(_pathSampler.hasNext) {
