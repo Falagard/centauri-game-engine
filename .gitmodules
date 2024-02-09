@@ -13,3 +13,6 @@
 [submodule "hxbt"]
 	path = hxbt
 	url = https://github.com/Falagard/hxbt
+[submodule "box2d"]
+	path = box2d
+	url = https://github.com/openfl/box2d
