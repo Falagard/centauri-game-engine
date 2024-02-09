@@ -10,3 +10,6 @@
 [submodule "seedyrng"]
 	path = seedyrng
 	url = https://github.com/chfoo/seedyrng
+[submodule "hxbt"]
+	path = hxbt
+	url = https://github.com/Falagard/hxbt
