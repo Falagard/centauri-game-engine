@@ -285,33 +285,35 @@ class TurtleDrawer {
     
     public function evaluateSystem() {
 
-        var parameter:Float = 0;
-        var parameterStr:String = "";
-        var skip:Int = 0; //number of characters to skip when we find a parameter
-        var nextClosingBracket:Int = 0;
-        var previousDistance:Float = 0;
-        var previousRotation:Float = 0;
+        // var parameter:Float = 0;
+        // var parameterStr:String = "";
+        // var skip:Int = 0; //number of characters to skip when we find a parameter
+        // var nextClosingBracket:Int = 0;
+        // var previousDistance:Float = 0;
+        // var previousRotation:Float = 0;
+
+        //todo - do a check that there are an equal number of open and close braces, etc.
 
         //loop through the characters, does not validate begin and end branches yet
         for(i in 0..._system.length) {
             var item = _system.charAt(i);
 
+            //todo - support parameterized commands like F(10) or +(270)
             //check if the next character is an open bracket "(" and if so it is used to be a parameter to the move, rotate, etc. as a distance or angle 
-            //for example, F(10) is forward 10. +(270) is rotate right 270 degrees. 
             //check if we have at least 2 more characters
-            if(i + 2 < _system.length) {
-                var nextItem = _system.charAt(i + 1);
+            // if(i + 2 < _system.length) {
+            //     var nextItem = _system.charAt(i + 1);
 
-                if(nextItem == "(") {
-                    //this is a parameter, find the next closing bracket starting at i + 1
-                    nextClosingBracket = _system.indexOf(")", i + 1);
+            //     if(nextItem == "(") {
+            //         //this is a parameter, find the next closing bracket starting at i + 1
+            //         nextClosingBracket = _system.indexOf(")", i + 1);
 
-                    if(nextClosingBracket > 0) {
-                        //get the parameter
-                        parameterStr = _system.substr(i + 1, nextClosingBracket);
-                    }
-                }
-            }
+            //         if(nextClosingBracket > 0) {
+            //             //get the parameter
+            //             parameterStr = _system.substr(i + 1, nextClosingBracket);
+            //         }
+            //     }
+            // }
 
             if(item == "F") {
                 forward(_distance);
