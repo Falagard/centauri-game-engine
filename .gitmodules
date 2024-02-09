@@ -7,12 +7,9 @@
 [submodule "sample-assets"]
 	path = sample-assets
 	url = https://github.com/Falagard/centauri-sample-assets
-[submodule "seedyrng"]
-	path = seedyrng
-	url = https://github.com/chfoo/seedyrng
 [submodule "hxbt"]
 	path = hxbt
 	url = https://github.com/Falagard/hxbt
 [submodule "box2d"]
 	path = box2d
-	url = https://github.com/openfl/box2d
+	url = https://github.com/Falagard/box2d
