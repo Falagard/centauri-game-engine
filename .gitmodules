@@ -10,6 +10,3 @@
 [submodule "seedyrng"]
 	path = seedyrng
 	url = https://github.com/chfoo/seedyrng
-[submodule "behavior-tree-hx"]
-	path = behavior-tree-hx
-	url = https://github.com/Falagard/behavior-tree-hx
