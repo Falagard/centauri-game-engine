@@ -13,3 +13,9 @@
 [submodule "box2d"]
 	path = box2d
 	url = https://github.com/Falagard/box2d
+[submodule "castle"]
+	path = castle
+	url = https://github.com/ncannasse/castle
+[submodule "actuate"]
+	path = actuate
+	url = https://github.com/openfl/actuate
