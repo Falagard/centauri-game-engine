@@ -62,7 +62,7 @@ For example this will move to your C:\ drive and create a directory called "src"
 
 Next we'll install some Haxe libraries that are used by Lime. This can be run from anywhere because these will be installed in C:\HaxeToolkit\haxe\lib
 
-We'll use haxelib to install "format", "hxp", and "hxcpp" libraries. 
+We'll use haxelib to install "format", "hxp", and "hxcpp" libraries. At the time of writing, format 3.7.0, hxp 1.3.0 and hxcpp 4.3.2
 
 haxelib is like a package manager for haxe, similar to Nuget, npm, pip, etc. that are available for other languages. 
 
@@ -85,13 +85,6 @@ Do the same for lime-samples:
 `git clone https://github.com/Falagard/lime-samples`
 
 `haxelib dev lime-samples lime-samples`
-
-and castle
-
-`git clone https://github.com/ncannasse/castle`
-
-`haxelib dev castle castle`
-
 
 ## Setup Hashlink 
 
@@ -127,7 +120,7 @@ Then in a directory you want to install Centauri enter the following:
 
 `git clone --recurse-submodules https://github.com/Falagard/centauri-game-engine`
 
-This will bring down the source code of the game engine and any dependent repositories it uses, which are hxDaedalus and BabylonHx. 
+This will bring down the source code of the game engine and any dependent repositories it uses, which include hxDaedalus, BabylonHx, box2d, actuate, hxbt, castle. 
 
 # Setup Submodules with Haxelib
 
@@ -153,7 +146,21 @@ We'll tell haxelib we want to add the "hxDaedalus" Haxe library from source in a
 
 `haxelib dev hxDaedalus hxDaedalus`
 
-`haxelib dev seedyrng seedyrng`
+hxbt is a Behavior Tree library for artificial intelligence. 
+
+`haxelib dev hxbt hxbt`
+
+box2d is a 2d physics library 
+
+`haxelib dev box2d box2d`
+
+castle is a structured static database
+
+`haxelib dev castle castle`
+
+actuate a is a tweening library
+
+`haxelib dev actuate actuate`
 
 ## CastleDB 
 

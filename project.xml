@@ -12,6 +12,8 @@
 	<haxelib name="babylonhx" />
 	<haxelib name="hxdaedalus" />
 	<haxelib name="castle" />
+	<haxelib name="box2d" />
+	<haxelib name="hxbt" />
 	
 	<!-- <haxelib name="actuate" /> -->
 	<!-- <haxelib name="hxcpp-debug-server" /> -->
