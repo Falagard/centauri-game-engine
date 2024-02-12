@@ -1,6 +1,6 @@
 # Centauri Game Engine
 
-The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, (and eventually artificial intelligence systems, entity component systems, and more) to create a full game engine. 
+The Centauri Game Engine uses BabylonHx as its rendering engine and adds pathfinding, artificial intelligence systems, tweening, physics (and eventually entity component systems, and more) to create a full game engine. 
 
 To get the engine running, we'll install Haxe (a programming language), Lime (a Haxe library that handles cross platform development), Hashlink (a virtual machine) and Centauri Engine. We'll also install some dependencies and some editing tools. 
 
@@ -120,7 +120,7 @@ Then in a directory you want to install Centauri enter the following:
 
 `git clone --recurse-submodules https://github.com/Falagard/centauri-game-engine`
 
-This will bring down the source code of the game engine and any dependent repositories it uses, which include hxDaedalus, BabylonHx, box2d, actuate, hxbt, castle. 
+This will bring down the source code of the game engine and any dependent repositories it uses, which include hxDaedalus, BabylonHx, box2d, tweenx, hxbt, castle. 
 
 # Setup Submodules with Haxelib
 
@@ -150,17 +150,17 @@ hxbt is a Behavior Tree library for artificial intelligence.
 
 `haxelib dev hxbt hxbt`
 
-box2d is a 2d physics library 
+box2d is a 2d physics library used for ray-casting for line of sight, collisions, etc. 
 
 `haxelib dev box2d box2d`
 
-castle is a structured static database
+castle is a structured static database used as a way to read game data. 
 
 `haxelib dev castle castle`
 
-actuate a is a tweening library
+tweenx a is a tweening library, which is used for juicy transitions. 
 
-`haxelib dev actuate actuate`
+`haxelib dev tweenx tweenx`
 
 ## CastleDB 
 
