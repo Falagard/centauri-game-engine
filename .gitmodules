@@ -16,6 +16,6 @@
 [submodule "castle"]
 	path = castle
 	url = https://github.com/ncannasse/castle
-[submodule "actuate"]
-	path = actuate
-	url = https://github.com/openfl/actuate
+[submodule "tweenx"]
+	path = tweenx
+	url = https://github.com/Falagard/tweenx
