@@ -18,6 +18,7 @@ class SampleSwitcher {
         _scene = scene;
 
         _samples = new Array<SampleBase>();
+        _samples.push(new SVG1(scene));
         _samples.push(new Turtle(scene));
         _samples.push(new Pathfinding(scene));
         _samples.push(new Tween(scene));
