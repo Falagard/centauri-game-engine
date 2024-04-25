@@ -20,7 +20,7 @@ class SampleSwitcher {
         _samples = new Array<SampleBase>();
         _samples.push(new Turtle(scene));
         _samples.push(new Pathfinding(scene));
-        _samples.push(new BehaviorTree(scene));
+        _samples.push(new Tween(scene));
         _currentSample = _samples[0];
         _currentSample.activate();
         

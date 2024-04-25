@@ -1,472 +1,472 @@
-package samples;
+// package samples;
 
-import lime.utils.Assets;
-import centauri.turtle.TurtleDrawer;
-import com.babylonhx.math.Plane;
-import com.babylonhx.math.Matrix;
-import com.babylonhx.mesh.LinesMesh;
-import haxe.display.Display.FindReferencesKind;
-import hxDaedalus.ai.trajectory.LinearPathSampler;
-import hxDaedalus.ai.PathFinder;
-import hxDaedalus.ai.EntityAI;
-import com.babylonhx.math.Vector2;
-import com.babylonhx.engine.EngineCapabilities.WEBGL_compressed_texture_s3tc;
-import com.babylonhx.utils.Keycodes;
-import com.babylonhx.cameras.FreeCamera;
-import haxe.iterators.StringIterator;
-import com.babylonhx.states._AlphaState;
-import com.babylonhx.math.Space;
-import com.babylonhx.math.Angle;
-import com.babylonhx.math.Axis;
-import com.babylonhx.mesh.TransformNode;
-import com.babylonhx.mesh.simplification.DecimationTriangle;
-import com.babylonhx.cameras.ArcRotateCamera;
-import com.babylonhx.lights.HemisphericLight;
-import com.babylonhx.materials.StandardMaterial;
-import com.babylonhx.materials.textures.CubeTexture;
-import com.babylonhx.materials.textures.Texture;
-import com.babylonhx.math.Color3;
-import com.babylonhx.math.Vector3;
-import com.babylonhx.mesh.Mesh;
-import com.babylonhx.layer.Layer;
-import com.babylonhx.mesh.VertexBuffer;
-import com.babylonhx.Scene;
-import com.babylonhx.tools.EventState;
-import com.babylonhx.events.PointerEvent;
-import hxDaedalus.data.ConstraintSegment;
-import hxDaedalus.data.ConstraintShape;
-import hxDaedalus.data.Mesh;
-import hxDaedalus.data.Object;
-import hxDaedalus.data.Vertex;
-//import hxDaedalus.view.SimpleView;
-import hxDaedalus.factories.RectMesh;
-import centauri.data.World;
+// import lime.utils.Assets;
+// import centauri.turtle.TurtleDrawer;
+// import com.babylonhx.math.Plane;
+// import com.babylonhx.math.Matrix;
+// import com.babylonhx.mesh.LinesMesh;
+// import haxe.display.Display.FindReferencesKind;
+// import hxDaedalus.ai.trajectory.LinearPathSampler;
+// import hxDaedalus.ai.PathFinder;
+// import hxDaedalus.ai.EntityAI;
+// import com.babylonhx.math.Vector2;
+// import com.babylonhx.engine.EngineCapabilities.WEBGL_compressed_texture_s3tc;
+// import com.babylonhx.utils.Keycodes;
+// import com.babylonhx.cameras.FreeCamera;
+// import haxe.iterators.StringIterator;
+// import com.babylonhx.states._AlphaState;
+// import com.babylonhx.math.Space;
+// import com.babylonhx.math.Angle;
+// import com.babylonhx.math.Axis;
+// import com.babylonhx.mesh.TransformNode;
+// import com.babylonhx.mesh.simplification.DecimationTriangle;
+// import com.babylonhx.cameras.ArcRotateCamera;
+// import com.babylonhx.lights.HemisphericLight;
+// import com.babylonhx.materials.StandardMaterial;
+// import com.babylonhx.materials.textures.CubeTexture;
+// import com.babylonhx.materials.textures.Texture;
+// import com.babylonhx.math.Color3;
+// import com.babylonhx.math.Vector3;
+// import com.babylonhx.mesh.Mesh;
+// import com.babylonhx.layer.Layer;
+// import com.babylonhx.mesh.VertexBuffer;
+// import com.babylonhx.Scene;
+// import com.babylonhx.tools.EventState;
+// import com.babylonhx.events.PointerEvent;
+// import hxDaedalus.data.ConstraintSegment;
+// import hxDaedalus.data.ConstraintShape;
+// import hxDaedalus.data.Mesh;
+// import hxDaedalus.data.Object;
+// import hxDaedalus.data.Vertex;
+// //import hxDaedalus.view.SimpleView;
+// import hxDaedalus.factories.RectMesh;
+// import centauri.data.World;
 
-using Lambda;
+// using Lambda;
 
-/**
+// /**
  
-*/
-class BehaviorTree extends SampleBase {
+// */
+// class BehaviorTree extends SampleBase {
 
-    private var _obstacleMesh:Mesh;
-    private var _entityAI:EntityAI;
-    //private var _entityAIs:Array<EntityAI>;
-    private var _pathfinder:PathFinder;
-    private var _pathSampler:LinearPathSampler;
-    private var _path:Array<Float>;
-    private var _pathMesh:LinesMesh = null;
-    //private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
-    private var _constrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
-    private var _unconstrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
-    private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
-    private var _turtleDrawer:TurtleDrawer = null;
+//     private var _obstacleMesh:Mesh;
+//     private var _entityAI:EntityAI;
+//     //private var _entityAIs:Array<EntityAI>;
+//     private var _pathfinder:PathFinder;
+//     private var _pathSampler:LinearPathSampler;
+//     private var _path:Array<Float>;
+//     private var _pathMesh:LinesMesh = null;
+//     //private var _obstacleLineMeshes:Array<com.babylonhx.mesh.Mesh> = null;
+//     private var _constrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
+//     private var _unconstrainedLinesMesh:com.babylonhx.mesh.LinesMesh = null;
+//     private var _arrowMesh:com.babylonhx.mesh.Mesh = null; 
+//     private var _turtleDrawer:TurtleDrawer = null;
 
-    private var _onKeyDown:Int->Void = function(keycode:Int) { };
-    private var _onKeyUp:Int->Void = function(keycode:Int) { };
-    private var _onMouseDown:PointerEvent->Void = function(evt:PointerEvent) { };
+//     private var _onKeyDown:Int->Void = function(keycode:Int) { };
+//     private var _onKeyUp:Int->Void = function(keycode:Int) { };
+//     private var _onMouseDown:PointerEvent->Void = function(evt:PointerEvent) { };
 
-    private var _camera:ArcRotateCamera = null;
-    private var _light:HemisphericLight = null;
+//     private var _camera:ArcRotateCamera = null;
+//     private var _light:HemisphericLight = null;
 
-    public function new(scene:Scene) {
-        super(scene);
-    }
+//     public function new(scene:Scene) {
+//         super(scene);
+//     }
     
 
-    /**
-        We're going to use hxdaedalus and an obstacle that is built using turtle commands and allow an entity to move around using pathfinding 
-    **/
-    public override function init() {
+//     /**
+//         We're going to use hxdaedalus and an obstacle that is built using turtle commands and allow an entity to move around using pathfinding 
+//     **/
+//     public override function init() {
 
-        super.init();
+//         super.init();
 
-        _onKeyDown = function(keyCode:Int) {
-			return this.onKeyDown(keyCode);
-		};
+//         _onKeyDown = function(keyCode:Int) {
+// 			return this.onKeyDown(keyCode);
+// 		};
 
-		_onKeyUp = function(keyCode:Int) {
-            return this.onKeyUp(keyCode);
-		};
+// 		_onKeyUp = function(keyCode:Int) {
+//             return this.onKeyUp(keyCode);
+// 		};
 
-        _onMouseDown = function(evt:PointerEvent) {
-            return this.onMouseDown(evt);
-        }
+//         _onMouseDown = function(evt:PointerEvent) {
+//             return this.onMouseDown(evt);
+//         }
 
-		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
-        _camera.setPosition(new Vector3(0, 0, 400));
-		_camera.maxZ = 20000;		
-		_camera.lowerRadiusLimit = 150;
+// 		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
+//         _camera.setPosition(new Vector3(0, 0, 400));
+// 		_camera.maxZ = 20000;		
+// 		_camera.lowerRadiusLimit = 150;
 		
-		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
-		_light.diffuse = Color3.FromInt(0xf68712);
+// 		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
+// 		_light.diffuse = Color3.FromInt(0xf68712);
 
-        //make a little triangle we'll use for our entity position during pathfinding
-        var arrowDrawer = new TurtleDrawer(_scene, true);
+//         //make a little triangle we'll use for our entity position during pathfinding
+//         var arrowDrawer = new TurtleDrawer(_scene, true);
         
-        arrowDrawer.penUp();
-        arrowDrawer.beginMesh();
-        arrowDrawer.left(180);
-        arrowDrawer.forward(5);
-        arrowDrawer.right(180);
-        arrowDrawer.penDown();
-        arrowDrawer.forward(10);
-        arrowDrawer.left(120);
-        arrowDrawer.forward(10);
-        arrowDrawer.left(120);
-        arrowDrawer.forward(10);
-        arrowDrawer.left(120);
-        arrowDrawer.forward(10);
-        arrowDrawer.endMesh();
+//         arrowDrawer.penUp();
+//         arrowDrawer.beginMesh();
+//         arrowDrawer.left(180);
+//         arrowDrawer.forward(5);
+//         arrowDrawer.right(180);
+//         arrowDrawer.penDown();
+//         arrowDrawer.forward(10);
+//         arrowDrawer.left(120);
+//         arrowDrawer.forward(10);
+//         arrowDrawer.left(120);
+//         arrowDrawer.forward(10);
+//         arrowDrawer.left(120);
+//         arrowDrawer.forward(10);
+//         arrowDrawer.endMesh();
 
-        //grab the current mesh so it doesn't get disposed when we call dispose()
-        _arrowMesh = arrowDrawer._meshes[0];
-        arrowDrawer._meshes = [];
-        arrowDrawer.dispose();
-        arrowDrawer = null;
+//         //grab the current mesh so it doesn't get disposed when we call dispose()
+//         _arrowMesh = arrowDrawer._meshes[0];
+//         arrowDrawer._meshes = [];
+//         arrowDrawer.dispose();
+//         arrowDrawer = null;
         
-        _turtleDrawer = new TurtleDrawer(_scene, false); //pass false for createMeshes
+//         _turtleDrawer = new TurtleDrawer(_scene, false); //pass false for createMeshes
 
-        //load value from world.cdb which is a castledb database - you can use the CastleDB editor to open it up and see the data
-        var worldText = Assets.getText("sample-assets/world.cdb");
-        World.load(worldText);
+//         //load value from world.cdb which is a castledb database - you can use the CastleDB editor to open it up and see the data
+//         var worldText = Assets.getText("sample-assets/world.cdb");
+//         World.load(worldText);
 
-        //get a trail from the trails sheet
-        //a trail is a series of turtle commands, F for forward, - for turn left, + for turn right that defines a path 
-        var trail = World.trails.get(trail02).trail;
+//         //get a trail from the trails sheet
+//         //a trail is a series of turtle commands, F for forward, - for turn left, + for turn right that defines a path 
+//         var trail = World.trails.get(trail02).trail;
         
-        //use lambda to filter only trail_segments that have a style of cave
-        var caveSegments = World.trail_segments.all.filter(function(segment) { 
-            return segment.style == Trail_segments_style.cave; 
-        });
+//         //use lambda to filter only trail_segments that have a style of cave
+//         var caveSegments = World.trail_segments.all.filter(function(segment) { 
+//             return segment.style == Trail_segments_style.cave; 
+//         });
 
-        //we're going to take our simple trail and replace parts of it with more complex turtle commands from trail_segments 
+//         //we're going to take our simple trail and replace parts of it with more complex turtle commands from trail_segments 
 
-        //replace each segment's from_segment with to_segment in trail
-        for(segment in caveSegments) {
+//         //replace each segment's from_segment with to_segment in trail
+//         for(segment in caveSegments) {
 
-            //apply search and replace to the system string
-            trace(segment.from_segment);
+//             //apply search and replace to the system string
+//             trace(segment.from_segment);
             
-            var toSegment:String = "";
+//             var toSegment:String = "";
             
-            //replace every second character with no-op X which means that it won't be found again for future search and replaces within the trail
-            for(i in 0...segment.to_segment.length) {
-                toSegment += segment.to_segment.charAt(i) + "X";
-            }
+//             //replace every second character with no-op X which means that it won't be found again for future search and replaces within the trail
+//             for(i in 0...segment.to_segment.length) {
+//                 toSegment += segment.to_segment.charAt(i) + "X";
+//             }
 
-            //replace each F with B, we'll do a search and replace at the end to fix this
-            toSegment = StringTools.replace(toSegment, "F", "B");
-            toSegment = StringTools.replace(toSegment, "f", "b");
+//             //replace each F with B, we'll do a search and replace at the end to fix this
+//             toSegment = StringTools.replace(toSegment, "F", "B");
+//             toSegment = StringTools.replace(toSegment, "f", "b");
 
-            trail = StringTools.replace(trail, segment.from_segment, toSegment);
+//             trail = StringTools.replace(trail, segment.from_segment, toSegment);
 
-        }
+//         }
 
-        //remove the no-op Xs and the Bb with Ff
-        trail = StringTools.replace(trail, "X", "");
-        trail = StringTools.replace(trail, "B", "F");
-        trail = StringTools.replace(trail, "b", "f");
+//         //remove the no-op Xs and the Bb with Ff
+//         trail = StringTools.replace(trail, "X", "");
+//         trail = StringTools.replace(trail, "B", "F");
+//         trail = StringTools.replace(trail, "b", "f");
 
-        _turtleDrawer._system = trail;
+//         _turtleDrawer._system = trail;
 
-        //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
-        _turtleDrawer.beginMesh();
-        _turtleDrawer.evaluateSystem();
-        _turtleDrawer.endMesh();
+//         //we're going to use our turtle code to generate a set of points that we'll pass to hxdaedalus for our obstacle
+//         _turtleDrawer.beginMesh();
+//         _turtleDrawer.evaluateSystem();
+//         _turtleDrawer.endMesh();
         
-        //hide all the meshes (does nothing if we have no meshes)
-        _turtleDrawer.hideMeshes();
+//         //hide all the meshes (does nothing if we have no meshes)
+//         _turtleDrawer.hideMeshes();
 
-        var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
-        var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
+//         var minPoint:Vector2 = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
+//         var maxPoint:Vector2 = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
         
-        var border:Float = 50;
+//         var border:Float = 50;
         
-        //now we have each position stored in points, we're going to use this as our obstacle
-        //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
-        for(points in _turtleDrawer._points) {
+//         //now we have each position stored in points, we're going to use this as our obstacle
+//         //first we need to figure out the boundaries of all points to get a containing rectangle we can use as the outside limits of our pathfinding
+//         for(points in _turtleDrawer._points) {
             
-            //get the extents of points
-            for(point in points) {
-                minPoint.x = Math.min(minPoint.x, point.x);
-                minPoint.y = Math.min(minPoint.y, point.y);
-                maxPoint.x = Math.max(maxPoint.x, point.x);
-                maxPoint.y = Math.max(maxPoint.y, point.y);
-            }
-        }
+//             //get the extents of points
+//             for(point in points) {
+//                 minPoint.x = Math.min(minPoint.x, point.x);
+//                 minPoint.y = Math.min(minPoint.y, point.y);
+//                 maxPoint.x = Math.max(maxPoint.x, point.x);
+//                 maxPoint.y = Math.max(maxPoint.y, point.y);
+//             }
+//         }
 
-        for(points in _turtleDrawer._points) {
-            //let's translate all points into positive and add a bit for a border 
+//         for(points in _turtleDrawer._points) {
+//             //let's translate all points into positive and add a bit for a border 
 
-            //find the amount of x and y we need add so all points are positive
-            var deltaY:Float = 0 - minPoint.y;
-            var deltaX:Float = 0 - minPoint.x;
+//             //find the amount of x and y we need add so all points are positive
+//             var deltaY:Float = 0 - minPoint.y;
+//             var deltaX:Float = 0 - minPoint.x;
 
-            if(deltaY >= 0) {
-                for(point in points) {
-                    point.y += deltaY + border; //move each position by this amount, plus add border 
-                }
-            }
+//             if(deltaY >= 0) {
+//                 for(point in points) {
+//                     point.y += deltaY + border; //move each position by this amount, plus add border 
+//                 }
+//             }
 
-            if(deltaX >= 0) {
-                for(point in points) {
-                    point.x += deltaX + border;
-                }
-            }
-        }
+//             if(deltaX >= 0) {
+//                 for(point in points) {
+//                     point.x += deltaX + border;
+//                 }
+//             }
+//         }
 
-        minPoint = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
-        maxPoint = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
+//         minPoint = new Vector2(Math.POSITIVE_INFINITY, Math.POSITIVE_INFINITY);
+//         maxPoint = new Vector2(Math.NEGATIVE_INFINITY, Math.NEGATIVE_INFINITY);
 
-        for(points in _turtleDrawer._points) {
+//         for(points in _turtleDrawer._points) {
             
-            //get our extents so we can pass these to hxdadelus for our obstacle boundaries
-            for(point in points) {
-                minPoint.x = Math.min(minPoint.x, point.x);
-                minPoint.y = Math.min(minPoint.y, point.y);
-                maxPoint.x = Math.max(maxPoint.x, point.x);
-                maxPoint.y = Math.max(maxPoint.y, point.y);
-            }
-        }
+//             //get our extents so we can pass these to hxdadelus for our obstacle boundaries
+//             for(point in points) {
+//                 minPoint.x = Math.min(minPoint.x, point.x);
+//                 minPoint.y = Math.min(minPoint.y, point.y);
+//                 maxPoint.x = Math.max(maxPoint.x, point.x);
+//                 maxPoint.y = Math.max(maxPoint.y, point.y);
+//             }
+//         }
 
-        //Now for the pathfinding mesh
-        //We'll use our extents maxPoint to build our boundary rectangle which starts at 0,0 and goes out to maxPoint.x + border and maxPoint.y + border
-        _obstacleMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
+//         //Now for the pathfinding mesh
+//         //We'll use our extents maxPoint to build our boundary rectangle which starts at 0,0 and goes out to maxPoint.x + border and maxPoint.y + border
+//         _obstacleMesh = RectMesh.buildRectangle(maxPoint.x + border, maxPoint.y + border);
 
-        for(points in _turtleDrawer._points) {
+//         for(points in _turtleDrawer._points) {
 
-            //Add a constraint object - this will use our turtle obstacle 
-            var object:Object = new Object();
+//             //Add a constraint object - this will use our turtle obstacle 
+//             var object:Object = new Object();
             
-            object.coordinates = new Array<Float>();
+//             object.coordinates = new Array<Float>();
 
-            var prevPoint:Vector3 = null;
+//             var prevPoint:Vector3 = null;
             
-            //hxdaedalus allows you to insert an object with line segments so we'll pass our points as 
-            //a line segment between every two points
+//             //hxdaedalus allows you to insert an object with line segments so we'll pass our points as 
+//             //a line segment between every two points
 
-            //for each set of points 
-            for(point in points) {
-                if(prevPoint == null) {
-                    prevPoint = point;
-                    continue;
-                }
+//             //for each set of points 
+//             for(point in points) {
+//                 if(prevPoint == null) {
+//                     prevPoint = point;
+//                     continue;
+//                 }
 
-                //from
-                object.coordinates.push(prevPoint.x);
-                object.coordinates.push(prevPoint.y);
-                //to
-                object.coordinates.push(point.x);
-                object.coordinates.push(point.y);
+//                 //from
+//                 object.coordinates.push(prevPoint.x);
+//                 object.coordinates.push(prevPoint.y);
+//                 //to
+//                 object.coordinates.push(point.x);
+//                 object.coordinates.push(point.y);
 
-                prevPoint = point;
-            }
+//                 prevPoint = point;
+//             }
 
-            _obstacleMesh.insertObject(object);
-        }
+//             _obstacleMesh.insertObject(object);
+//         }
         
-        //now we're going to create a mesh that will allow us to visualize the obstacle and walkable paths
-        var vertsAndEdges = _obstacleMesh.getVerticesAndEdges();
+//         //now we're going to create a mesh that will allow us to visualize the obstacle and walkable paths
+//         var vertsAndEdges = _obstacleMesh.getVerticesAndEdges();
 
-        var edgePoints:Array<Vector3> = [];
+//         var edgePoints:Array<Vector3> = [];
 
-        var constrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
-        var unconstrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
+//         var constrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
+//         var unconstrainedLineMeshes:Array<com.babylonhx.mesh.Mesh> = [];
         
-        //create meshes from the edges 
-        for(edge in vertsAndEdges.edges) {
+//         //create meshes from the edges 
+//         for(edge in vertsAndEdges.edges) {
             
-            edgePoints.push(new Vector3(edge.originVertex.pos.x, edge.originVertex.pos.y, 0));
-            edgePoints.push(new Vector3(edge.destinationVertex.pos.x, edge.destinationVertex.pos.y, 0));            
+//             edgePoints.push(new Vector3(edge.originVertex.pos.x, edge.originVertex.pos.y, 0));
+//             edgePoints.push(new Vector3(edge.destinationVertex.pos.x, edge.destinationVertex.pos.y, 0));            
             
-            var mesh = com.babylonhx.mesh.Mesh.CreateLines("", edgePoints, _scene, false);
+//             var mesh = com.babylonhx.mesh.Mesh.CreateLines("", edgePoints, _scene, false);
 
-            mesh.freezeWorldMatrix();
+//             mesh.freezeWorldMatrix();
 
-            //constrained edges are the obstacle edges and not constrained are the walkable edges
-            if(edge.isConstrained) {
-                constrainedLineMeshes.push(mesh);
-            } else {
-                unconstrainedLineMeshes.push(mesh);
-            }
+//             //constrained edges are the obstacle edges and not constrained are the walkable edges
+//             if(edge.isConstrained) {
+//                 constrainedLineMeshes.push(mesh);
+//             } else {
+//                 unconstrainedLineMeshes.push(mesh);
+//             }
             
-            edgePoints = [];
-        }
+//             edgePoints = [];
+//         }
 
-        //we've created a mesh per line segment, which is very inefficient. Merge them together here. 
-        _constrainedLinesMesh = new LinesMesh("MergedConstrained", _scene);
-        com.babylonhx.mesh.Mesh.MergeMeshes(constrainedLineMeshes, true, true, _constrainedLinesMesh, false);
+//         //we've created a mesh per line segment, which is very inefficient. Merge them together here. 
+//         _constrainedLinesMesh = new LinesMesh("MergedConstrained", _scene);
+//         com.babylonhx.mesh.Mesh.MergeMeshes(constrainedLineMeshes, true, true, _constrainedLinesMesh, false);
 
-        _unconstrainedLinesMesh = new LinesMesh("MergedUnconstrained", _scene);
-        com.babylonhx.mesh.Mesh.MergeMeshes(unconstrainedLineMeshes, true, true, _unconstrainedLinesMesh, false);
-        _unconstrainedLinesMesh.color = Color3.Blue();
+//         _unconstrainedLinesMesh = new LinesMesh("MergedUnconstrained", _scene);
+//         com.babylonhx.mesh.Mesh.MergeMeshes(unconstrainedLineMeshes, true, true, _unconstrainedLinesMesh, false);
+//         _unconstrainedLinesMesh.color = Color3.Blue();
 
-        _entityAI = new EntityAI();
-        _entityAI.radius = 4;
-        _entityAI.x = 20;
-        _entityAI.y = 20;
+//         _entityAI = new EntityAI();
+//         _entityAI.radius = 4;
+//         _entityAI.x = 20;
+//         _entityAI.y = 20;
 
-        // now configure the pathfinder
-        _pathfinder = new PathFinder();
-        //_pathfinder.entity = _entityAI;  // set the entity  
-        _pathfinder.mesh = _obstacleMesh;
+//         // now configure the pathfinder
+//         _pathfinder = new PathFinder();
+//         //_pathfinder.entity = _entityAI;  // set the entity  
+//         _pathfinder.mesh = _obstacleMesh;
 
-        // we need a vector to store the path
-        _path = new Array<Float>();
+//         // we need a vector to store the path
+//         _path = new Array<Float>();
         
-        // then configure the path sampler
-        _pathSampler = new LinearPathSampler();
-        _pathSampler.entity = _entityAI;
-        _pathSampler.samplingDistance = 10;
-        _pathSampler.path = _path;
+//         // then configure the path sampler
+//         _pathSampler = new LinearPathSampler();
+//         _pathSampler.entity = _entityAI;
+//         _pathSampler.samplingDistance = 10;
+//         _pathSampler.path = _path;
         
-    }
+//     }
 
-    /**
-        Activate our state 
-    **/
-    public override function activate() {
+//     /**
+//         Activate our state 
+//     **/
+//     public override function activate() {
 
-        super.activate();
+//         super.activate();
 
-        //activate happens after init, so everything is created at this point
-        _scene.getEngine().keyDown.push(_onKeyDown);
-        _scene.getEngine().keyUp.push(_onKeyUp);
-        _scene.getEngine().mouseDown.push(_onMouseDown);
+//         //activate happens after init, so everything is created at this point
+//         _scene.getEngine().keyDown.push(_onKeyDown);
+//         _scene.getEngine().keyUp.push(_onKeyUp);
+//         _scene.getEngine().mouseDown.push(_onMouseDown);
         
-        _light.setEnabled(true);
-        _scene.activeCamera = _camera;
+//         _light.setEnabled(true);
+//         _scene.activeCamera = _camera;
 
-        _camera.attachControl();
-    }
+//         _camera.attachControl();
+//     }
 
-    /** 
-        Deactivate our state, for this sample we'll destroy everything in deactivate
-    **/
-    public override function deactivate() {
+//     /** 
+//         Deactivate our state, for this sample we'll destroy everything in deactivate
+//     **/
+//     public override function deactivate() {
 
-        super.deactivate();
+//         super.deactivate();
 
-        _turtleDrawer.dispose();
-        _turtleDrawer = null;
+//         _turtleDrawer.dispose();
+//         _turtleDrawer = null;
 
-        if(_pathMesh != null) {
-            _pathMesh.dispose();
-        }
+//         if(_pathMesh != null) {
+//             _pathMesh.dispose();
+//         }
 
-        _pathMesh = null;
+//         _pathMesh = null;
 
-        _constrainedLinesMesh.dispose();
-        _constrainedLinesMesh = null;
-        _unconstrainedLinesMesh.dispose();
-        _unconstrainedLinesMesh = null;
+//         _constrainedLinesMesh.dispose();
+//         _constrainedLinesMesh = null;
+//         _unconstrainedLinesMesh.dispose();
+//         _unconstrainedLinesMesh = null;
 
-        _path = [];
+//         _path = [];
 
-        _arrowMesh.dispose();
-        _arrowMesh = null;
+//         _arrowMesh.dispose();
+//         _arrowMesh = null;
 
-        _scene.getEngine().keyDown.remove(_onKeyDown);
-        _scene.getEngine().keyUp.remove(_onKeyUp);
-        _scene.getEngine().mouseDown.remove(_onMouseDown);
+//         _scene.getEngine().keyDown.remove(_onKeyDown);
+//         _scene.getEngine().keyUp.remove(_onKeyUp);
+//         _scene.getEngine().mouseDown.remove(_onMouseDown);
 
-        _light.dispose();
-        _light = null;
+//         _light.dispose();
+//         _light = null;
 
-        _camera.detachControl();
-        _camera.dispose();
-        _camera = null;
+//         _camera.detachControl();
+//         _camera.dispose();
+//         _camera = null;
 
-        _initialized = false;
+//         _initialized = false;
 
-        _pathfinder.dispose();
-        _pathfinder = null;
-        _pathSampler.dispose();
-        _pathSampler = null;
-    }
+//         _pathfinder.dispose();
+//         _pathfinder = null;
+//         _pathSampler.dispose();
+//         _pathSampler = null;
+//     }
     
-    //Perform our updates
-    public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
+//     //Perform our updates
+//     public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
             
-        //performs obstacle updates if necessary
-        _obstacleMesh.updateObjects();
+//         //performs obstacle updates if necessary
+//         _obstacleMesh.updateObjects();
 
-        var dt = scene.getEngine().getDeltaTime();
+//         var dt = scene.getEngine().getDeltaTime();
 
-        _pathSampler.samplingDistance = dt * 0.1;
+//         _pathSampler.samplingDistance = dt * 0.1;
 
-        //this does really simple multiple frame movement, moving by pathSampler.samplingDistance each frame
-        if(_pathSampler.hasNext) {
-            _pathSampler.next();
-            _arrowMesh.position.x = _entityAI.x;
-            _arrowMesh.position.y = _entityAI.y;
-            _arrowMesh.position.z = 0;
-        }
+//         //this does really simple multiple frame movement, moving by pathSampler.samplingDistance each frame
+//         if(_pathSampler.hasNext) {
+//             _pathSampler.next();
+//             _arrowMesh.position.x = _entityAI.x;
+//             _arrowMesh.position.y = _entityAI.y;
+//             _arrowMesh.position.z = 0;
+//         }
 
-        _elapsedTime += dt;
+//         _elapsedTime += dt;
 
-        //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
-        // if(_elapsedTime > 300) {
-        //     _keysHandled = new Map();
-        // }
+//         //if enough time has elapsed, set the _keysHandled to false so they'll re-trigger
+//         // if(_elapsedTime > 300) {
+//         //     _keysHandled = new Map();
+//         // }
 
-        // if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
+//         // if(_keysDown[Keycodes.key_1] && !_keysHandled[Keycodes.key_1]) {
             
-        //     _keysHandled[Keycodes.key_1] = true;
-        // }
-    }
+//         //     _keysHandled[Keycodes.key_1] = true;
+//         // }
+//     }
 
-    private function onKeyDown(keyCode:Int) {
-        _keysDown[keyCode] = true;
-    }
+//     private function onKeyDown(keyCode:Int) {
+//         _keysDown[keyCode] = true;
+//     }
 
-    private function onKeyUp(keyCode:Int) {
-        _keysDown[keyCode] = false;
-        _keysHandled[keyCode] = false;
-    }
+//     private function onKeyUp(keyCode:Int) {
+//         _keysDown[keyCode] = false;
+//         _keysHandled[keyCode] = false;
+//     }
 
-    private function onMouseDown(evt:PointerEvent) {
+//     private function onMouseDown(evt:PointerEvent) {
             
-        //we can't just use evt.x and evt.y because they're in screen space 
-        //need to get intersection of screen x,y with a plane so we can get the world space position
-        var world = Matrix.Identity();
+//         //we can't just use evt.x and evt.y because they're in screen space 
+//         //need to get intersection of screen x,y with a plane so we can get the world space position
+//         var world = Matrix.Identity();
 
-        //picking ray is the x,y position in screen space transformed into world space by the world matrix 
-        var ray = this._scene.createPickingRay(evt.x, evt.y, world);
+//         //picking ray is the x,y position in screen space transformed into world space by the world matrix 
+//         var ray = this._scene.createPickingRay(evt.x, evt.y, world);
 
-        //our plane is defined in world space from a position and a normal (perpendicular vector) which in this case is simple a Vector3 with z = 1
-        var plane:Plane = Plane.FromPositionAndNormal(Vector3.Zero(), Vector3.Forward());
+//         //our plane is defined in world space from a position and a normal (perpendicular vector) which in this case is simple a Vector3 with z = 1
+//         var plane:Plane = Plane.FromPositionAndNormal(Vector3.Zero(), Vector3.Forward());
 
-        //intersect a plane 
-        var distance = ray.intersectsPlane(plane);
+//         //intersect a plane 
+//         var distance = ray.intersectsPlane(plane);
         
-        if(distance > Math.NEGATIVE_INFINITY)
-        {
-            //get the hit position in world space
-            var hitPos = ray.origin.add(ray.direction.multiplyByFloats(distance, distance, distance));
+//         if(distance > Math.NEGATIVE_INFINITY)
+//         {
+//             //get the hit position in world space
+//             var hitPos = ray.origin.add(ray.direction.multiplyByFloats(distance, distance, distance));
 
-            //find a path 
-            _pathfinder.entity = _entityAI;  // set the entity  
-            _pathfinder.findPath(hitPos.x, hitPos.y, _path );
+//             //find a path 
+//             _pathfinder.entity = _entityAI;  // set the entity  
+//             _pathfinder.findPath(hitPos.x, hitPos.y, _path );
 
-            _pathSampler.reset();
+//             _pathSampler.reset();
             
-            //now get the path and create some lines to represent it
-            var pathPoints:Array<Vector3> = [];
+//             //now get the path and create some lines to represent it
+//             var pathPoints:Array<Vector3> = [];
     
-            var i = 0;
-            while (i < _path.length) {
-                pathPoints.push(new Vector3(_path[i], _path[i + 1]));
-                i += 2;
-            }
+//             var i = 0;
+//             while (i < _path.length) {
+//                 pathPoints.push(new Vector3(_path[i], _path[i + 1]));
+//                 i += 2;
+//             }
     
-            if(_pathMesh != null) {
-                _pathMesh.dispose();
-            }
+//             if(_pathMesh != null) {
+//                 _pathMesh.dispose();
+//             }
     
-            _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
-            _pathMesh.color = Color3.Red();	
-        }
-    }
-}
+//             _pathMesh = com.babylonhx.mesh.Mesh.CreateLines("", pathPoints, _scene, false);
+//             _pathMesh.color = Color3.Red();	
+//         }
+//     }
+// }

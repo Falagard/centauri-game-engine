@@ -158,9 +158,15 @@ castle is a structured static database used as a way to read game data.
 
 `haxelib dev castle castle`
 
-tweenx a is a tweening library, which is used for juicy transitions. 
+tweenxcore a is a tweening library, which is used for juicy transitions. 
 
-`haxelib dev tweenx tweenx`
+The way tweenxcore is setup, we need to change into the tweenxcore directory before adding it to haxelib:
+
+`cd tweenx\src\`
+
+We should now be in the centuari-game-engine\tweenx\src\ directory. 
+
+`haxelib dev tweenxcore tweenxcore`
 
 ## CastleDB 
 
