@@ -7,15 +7,15 @@
 [submodule "sample-assets"]
 	path = sample-assets
 	url = https://github.com/Falagard/centauri-sample-assets
-[submodule "hxbt"]
-	path = hxbt
-	url = https://github.com/Falagard/hxbt
 [submodule "box2d"]
 	path = box2d
 	url = https://github.com/Falagard/box2d
 [submodule "castle"]
 	path = castle
 	url = https://github.com/ncannasse/castle
+[submodule "hxbt"]
+	path = hxbt
+	url = https://github.com/Falagard/hxbt
 [submodule "tweenx"]
 	path = tweenx
 	url = https://github.com/Falagard/tweenx
