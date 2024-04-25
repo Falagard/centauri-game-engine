@@ -1,5 +1,9 @@
 package samples;
 
+import com.babylonhx.math.polyclip.geom.Segment;
+import com.babylonhx.extensions.svg.MoveSegment;
+import com.babylonhx.extensions.svg.Group.DisplayElement;
+import com.babylonhx.extensions.svg.SVGData;
 import lime.utils.Assets;
 import centauri.turtle.TurtleDrawer;
 import com.babylonhx.math.Plane;
@@ -82,11 +86,34 @@ class SVG1 extends SampleBase {
 		_light.diffuse = Color3.FromInt(0xf68712);
 
         var lineSvgText = Assets.getText("sample-assets/line.svg");
-
-        var svg = new SVG(lineSvgText);
-
         
+        //load the svg line
+        var svgData = new SVGData(Xml.parse(lineSvgText));
+        var child = svgData.children[0];
 
+        switch(child) {
+		    case DisplayGroup(group):
+                //as expected
+                var subChild = group.children[0];
+                switch(subChild) {
+                    case DisplayGroup(subGroup):
+                                                          
+                    case DisplayPath(subPath):
+                        //this will have our path segments
+                        var points:Array<Vector3> = [];
+                        for(segment in subPath.segments) {
+
+                            if(Std.isOfType(segment, MoveSegment)) {
+                                points.push(new Vector3(segment.x, segment.y, 0));
+                            } else {
+                                points.push(new Vector3(segment.x, segment.y, 0));
+                            }
+                        }             
+
+                        var mesh = com.babylonhx.mesh.Mesh.CreateLines("", points, _scene, false);
+                }
+			case DisplayPath(path):
+	    }
     }
 
     /**
