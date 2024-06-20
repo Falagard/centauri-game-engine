@@ -46,7 +46,7 @@ Run the installer and choose the "Desktop Development with C++" in the list of o
 
 # Setup Lime
 
-Next we'll install Lime, (for more information see https://lime.openfl.org/) which is a framework that includes tools and an libraries for building cross platform Haxe applications, including an OpenGL abstraction layer we use for rendering. 
+Next we'll install Lime, (for more information see https://lime.openfl.org/) which is a framework that includes tools and libraries for building cross platform Haxe applications, including an OpenGL abstraction layer we use for rendering. 
 
 There's a fork of Lime here https://github.com/Falagard/lime and we're going to build Lime from source. The Fork was roughly version was between version 8.1.1 and 8.2 at the time it was forked. 
 
