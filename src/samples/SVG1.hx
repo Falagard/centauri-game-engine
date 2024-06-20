@@ -78,7 +78,7 @@ class SVG1 extends SampleBase {
         }
 
 		_camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), _scene);
-        _camera.setPosition(new Vector3(0, 0, 400));
+        _camera.setPosition(new Vector3(0, 0, -400));
 		_camera.maxZ = 20000;		
 		_camera.lowerRadiusLimit = 150;
 		
@@ -90,6 +90,9 @@ class SVG1 extends SampleBase {
         //load the svg line
         var svgData = new SVGData(Xml.parse(lineSvgText));
         var child = svgData.children[0];
+
+        //Layers for Towns, Routes, Buildings, 
+        //
 
         switch(child) {
 		    case DisplayGroup(group):
@@ -104,9 +107,9 @@ class SVG1 extends SampleBase {
                         for(segment in subPath.segments) {
 
                             if(Std.isOfType(segment, MoveSegment)) {
-                                points.push(new Vector3(segment.x, segment.y, 0));
+                                points.push(new Vector3(segment.x, -1 * segment.y, 0));
                             } else {
-                                points.push(new Vector3(segment.x, segment.y, 0));
+                                points.push(new Vector3(segment.x, -1 * segment.y, 0));
                             }
                         }             
 
