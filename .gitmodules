@@ -3,7 +3,7 @@
 	url = https://github.com/Falagard/hxDaedalus
 [submodule "babylonhx"]
 	path = babylonhx
-	url = https://github.com/Falagard/babylonhx
+	url = https://github.com/Falagard/BabylonHx
 [submodule "sample-assets"]
 	path = sample-assets
 	url = https://github.com/Falagard/centauri-sample-assets
