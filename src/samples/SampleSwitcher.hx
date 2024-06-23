@@ -21,7 +21,8 @@ class SampleSwitcher {
         _samples.push(new Turtle(scene));
         _samples.push(new Pathfinding(scene));
         _samples.push(new Tween(scene));
-        _samples.push(new SVG1(scene));
+        _samples.push(new MeshSample1(scene));
+        //_samples.push(new SVG1(scene));
         _currentSample = _samples[0];
         _currentSample.activate();
         
@@ -38,20 +39,17 @@ class SampleSwitcher {
             var dt = scene.getEngine().getDeltaTime();
             _elapsedTime += dt;
 
-            if(_keysDown[Keycodes.key_1] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_1]) {
-                changeSample(0);
-                _keysHandled[Keycodes.key_1] = true;
-            }
-
-            if(_keysDown[Keycodes.key_2] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_2]) {
-                changeSample(1);
-                _keysHandled[Keycodes.key_2] = true;
-            }
-
-            if(_keysDown[Keycodes.key_3] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_3]) {
-                changeSample(2);
-                _keysHandled[Keycodes.key_3] = true;
-            }
+            //check for num samples up to 0 if the keys are down
+            //we'll have a better way to do this soon hopefully using 
+            for(i in 0...9) {
+                if(_keysDown[Keycodes.key_1 + i] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_1 + i]) {
+                    if(i > _samples.length - 1) {
+                       break; 
+                    }
+                    changeSample(i);
+                    _keysHandled[Keycodes.key_1 + i] = true;
+                }
+            }           
         });
     }
 
