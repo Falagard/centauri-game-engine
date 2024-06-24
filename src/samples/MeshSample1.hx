@@ -94,11 +94,18 @@ class MeshSample1 extends SampleBase {
 		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
 		_light.diffuse = Color3.FromInt(0xf68712);
 
-        //load a mesh and assign a texture
+        //the policewoman.babylon mesh was generated using Triposr an image to 3d model tool to generate an .obj file with a baked texture and UV coordinates
+        //It is then opened in blender where the Weld Modifier (to fix triangles), Decimate modifier (to reduce poly count), and the Weighted Normal modifier to smooth the normals 
+        //It is then exported using the BabylonJS exporter and loaded here
 		SceneLoader.ImportMesh("", "sample-assets/", "policewoman.babylon", _scene, function (newMeshes, particleSystems, skeletons) {
             _mesh = newMeshes[0];
+            //scale the mesh by 100
             _mesh.scaling = new Vector3(100, 100, 100);
-            trace("got here");
+            //The exporter currently doesn't export a uScale or vScale for the texture, so we'll set both manually
+            //For some reason we need to flip the UV coordinates vertically, so we'll set the vScale to -1 
+            var standardMat:StandardMaterial = cast(_mesh.material, StandardMaterial);
+            standardMat.diffuseTexture.vScale = -1;
+            standardMat.diffuseTexture.uScale = 1;
 		});	
     }
 
