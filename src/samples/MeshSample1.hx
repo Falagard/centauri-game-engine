@@ -1,5 +1,6 @@
 package samples;
 
+import com.babylonhx.materials.Material;
 import com.babylonhx.loading.SceneLoader;
 import lime.utils.Assets;
 import centauri.turtle.TurtleDrawer;
@@ -150,6 +151,35 @@ class MeshSample1 extends SampleBase {
         var dt = scene.getEngine().getDeltaTime();
         _elapsedTime += dt;
 
+        if(_keysDown[Keycodes.key_a] && !_keysHandled[Keycodes.key_a]) {
+            //switch the U by 90 degrees
+            var standardMat:StandardMaterial = cast(_mesh.material, StandardMaterial);
+            standardMat.diffuseTexture.uAng += 90;
+            if(standardMat.diffuseTexture.uAng >= 360)
+                standardMat.diffuseTexture.uAng = 0;
+            _keysHandled[Keycodes.key_a] = true;
+        }
+        else if(_keysDown[Keycodes.key_b] && !_keysHandled[Keycodes.key_b]) {
+            //switch the V by 90 degrees
+            var standardMat:StandardMaterial = cast(_mesh.material, StandardMaterial);
+            standardMat.diffuseTexture.vAng += 90;
+            if(standardMat.diffuseTexture.vAng >= 360)
+                standardMat.diffuseTexture.vAng = 0;
+            _keysHandled[Keycodes.key_b] = true;
+        }
+        else if(_keysDown[Keycodes.key_c] && !_keysHandled[Keycodes.key_c]) {
+            //switch the w by 90 degrees
+            var standardMat:StandardMaterial = cast(_mesh.material, StandardMaterial);
+            standardMat.diffuseTexture.wAng += 90;
+            if(standardMat.diffuseTexture.wAng >= 360)
+                standardMat.diffuseTexture.wAng = 0;
+            _keysHandled[Keycodes.key_c] = true;
+        }
+        else if(_keysDown[Keycodes.key_d] && !_keysHandled[Keycodes.key_d]) {
+            var standardMat:StandardMaterial = cast(_mesh.material, StandardMaterial);
+            standardMat.diffuseTexture.vScale = -1;
+            _keysHandled[Keycodes.key_d] = true;
+        }
     }
 
     private function onKeyDown(keyCode:Int) {
@@ -159,6 +189,7 @@ class MeshSample1 extends SampleBase {
     private function onKeyUp(keyCode:Int) {
         _keysDown[keyCode] = false;
         _keysHandled[keyCode] = false;
+        
     }
 
     private function onMouseDown(evt:PointerEvent) {
