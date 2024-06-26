@@ -34,6 +34,10 @@ for x in os.listdir():
                 prompt = row[2]
                 negative = row[3]
                 seed = int(row[12])
+                skip = row[13]
+
+                if skip == "y":
+                    continue
 
                 #create an output directory for each category if needed
                 directoryPath = "generated/" + category + "/"
