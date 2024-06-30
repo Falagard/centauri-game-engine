@@ -2,17 +2,21 @@
 #conda install -c conda-forge diffusers
 #then create one or more .csv files in the same directory as the script with the following columns. The only columns used are 0, 1, 2, and 8 so the rest can be empty. 
 #example:
-#name,prompt,negative,my prompt,my negative,my name,my number,my seed mod,calculated seed
-#item1,green frog,kermit,,,,,1
+#category,name,prompt,negative,my prompt,my negative,my name,my number,my seed mod,calculated seed, skip
 #see https://docs.google.com/spreadsheets/d/17E4NR7sOZUWKSrFGfJULz7DzSEbZE65gMczFbDKmmnI/edit?usp=sharing
 
-from diffusers import DiffusionPipeline
+from diffusers import DiffusionPipeline, UniPCMultistepScheduler
+from compel import Compel
 import torch
 import csv
 import os
 
-pipeline = DiffusionPipeline.from_pretrained("dreamlike-art/dreamlike-photoreal-2.0", torch_dtype=torch.float16)
-pipeline.to("cuda")
+
+pipe = DiffusionPipeline.from_pretrained("dreamlike-art/dreamlike-photoreal-2.0", torch_dtype=torch.float16)
+pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
+pipe.to("cuda")
+
+compel_proc = Compel(tokenizer=pipe.tokenizer, text_encoder=pipe.text_encoder)
 
 #loop through all .csv files in the current directory, and generate images from the contents 
 
@@ -45,8 +49,12 @@ for x in os.listdir():
                 if not os.path.isdir(directoryPath): 
                     os.makedirs(directoryPath) 
 
+                #prompt_embeds = compel_proc(prompt)
+                #negative_embeds = compel_proc(negative)
+
                 generator = torch.Generator(device="cuda").manual_seed(seed)
-                image = pipeline(prompt, negative_prompt=negative).images[0]
+                #image = pipe(prompt_embeds=prompt_embeds, generator=generator, negative_prompt_embeds=negative_embeds, num_inference_steps=20).images[0]
+                image = pipe(prompt, negative_prompt=negative).images[0]
                 image.save(directoryPath + name + ".png")
 
 

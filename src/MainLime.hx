@@ -6,28 +6,19 @@ import lime.ui.MouseWheelMode;
 //import hxtelemetry.HxTelemetry;
 #end
 
-import haxe.Timer;
 import lime.app.Application;
-import lime.utils.Assets;
-//import lime.graphics.GLRenderContext;
-import lime.graphics.WebGL2RenderContext;
-//import lime.graphics.opengl.WebGLContext;
-import lime.ui.KeyCode;
 import lime.ui.KeyModifier;
-import lime.graphics.RenderContext;
-//import lime.graphics.Renderer;
 import lime.ui.Touch;
-import lime.ui.Window;
 
 import com.babylonhx.engine.Engine;
 import com.babylonhx.events.PointerEvent;
 import com.babylonhx.events.PointerEventTypes;
 import com.babylonhx.Scene;
-import com.babylonhx.states._AlphaState;
 
 /**
  * ...
  * @author Krtolica Vujadin
+ * @author Clay Larabie
  */
 #if cpp
 //@:build(haxebullet.MacroUtil.buildAll())
@@ -50,26 +41,16 @@ class MainLime extends Application {
 	}
 	
 	override public function onWindowCreate() {
-		//switch (window.context) {
-			//case OPENGL (gl):
-				//var gl:WebGL2Context = window.context;
-				
-				//var gles3:lime.graphics.OpenGLES3RenderContext = window.context;
-
-				//trace("before creating engine");
-
-				var renderContext = lime.graphics.opengl.GL.context;
-
-				engine = new Engine(window, renderContext, true);	
-				scene = new Scene(engine);
-				
-				engine.width = window.width;
-				engine.height = window.height;
-				
-			//default:
-				//
-		//}
 		
+
+		var renderContext = lime.graphics.opengl.GL.context;
+
+		engine = new Engine(window, renderContext, true);	
+		scene = new Scene(engine);
+		
+		engine.width = window.width;
+		engine.height = window.height;
+				
 		pointerEvent = new PointerEvent();
 	}
 	
@@ -160,14 +141,12 @@ class MainLime extends Application {
 		for(f in engine.keyUp) {
 			f(keycode);
 		}
-		//scene.stage2D._onKU(modifier.altKey, modifier.ctrlKey, modifier.shiftKey, keycode, 0);
 	}
 	
 	override function onKeyDown(keycode:Int, modifier:KeyModifier) {
 		for(f in engine.keyDown) {
 			f(keycode);
 		}
-		//scene.stage2D._onKD(modifier.altKey, modifier.ctrlKey, modifier.shiftKey, keycode, 0);
 	}
 	
 	override public function onWindowResize(width:Int, height:Int) {
@@ -182,9 +161,6 @@ class MainLime extends Application {
 	}
 	
 	override function update(deltaTime:Int) {
-		#if cpp
-		//hxt.advance_frame();
-		#end
 		engine._renderLoop();
 	}
 	
