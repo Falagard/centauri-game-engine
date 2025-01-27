@@ -15,6 +15,8 @@
 	<haxelib name="box2d" />
 	<haxelib name="hxbt" />
 	<haxelib name="tweenxcore" />
+	<haxelib name="haxeui-core" />
+	<haxelib name="haxeui-babylonhx" />
 	
 	<!-- <haxelib name="actuate" /> -->
 	<!-- <haxelib name="hxcpp-debug-server" /> -->

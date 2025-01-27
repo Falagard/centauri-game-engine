@@ -42,7 +42,7 @@ import com.babylonhx.extensions.svg.SVG;
 using Lambda;
 
 /**
- 
+  GUI sample using haxe ui
 */
 class GUI extends SampleBase {
 
