@@ -19,3 +19,6 @@
 [submodule "tweenx"]
 	path = tweenx
 	url = https://github.com/Falagard/tweenx
+[submodule "haxeui-babylonhx"]
+	path = haxeui-babylonhx
+	url = https://github.com/Falagard/haxeui-babylonhx
