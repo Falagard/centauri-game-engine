@@ -1,0 +1,5 @@
+<vbox style="padding: 5px;">
+    <hbox>
+        <button text="Press Me!" id="button1" style="color: red;" />
+    </hbox>    
+</vbox>

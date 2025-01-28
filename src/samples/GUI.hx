@@ -38,6 +38,11 @@ import com.babylonhx.Scene;
 import com.babylonhx.tools.EventState;
 import com.babylonhx.events.PointerEvent;
 import com.babylonhx.extensions.svg.SVG;
+import haxe.ui.core.Component;
+import com.babylonhx.ui.UIComponent;
+import haxe.ui.Toolkit;
+import haxe.ui.HaxeUIApp;
+import haxe.ui.core.Screen;
 
 using Lambda;
 
@@ -52,6 +57,7 @@ class GUI extends SampleBase {
 
     private var _camera:ArcRotateCamera = null;
     private var _light:HemisphericLight = null;
+    private var _rootComponent:UIComponent = null;
     
     public function new(scene:Scene) {
         super(scene);
@@ -64,6 +70,27 @@ class GUI extends SampleBase {
 
         super.init();
 
+        Toolkit.init();
+        Toolkit.scaleX = 1;
+        Toolkit.scaleY = 1;
+
+        _rootComponent = new UIComponent();
+        @:privateAccess _rootComponent.posChanged = true;
+
+        var app = new HaxeUIApp();
+        app.ready(
+            function() {
+
+                Screen.instance.root = _rootComponent;
+
+                //app.addComponent(main);
+                //app.addComponent(new MainView());
+                var comp:Component = haxe.ui.ComponentBuilder.fromFile("samples/gui/main-view.xml");
+                app.addComponent(comp);
+                app.start();
+            }
+        );
+		
         _onKeyDown = function(keyCode:Int) {
 			return this.onKeyDown(keyCode);
 		};
@@ -84,7 +111,12 @@ class GUI extends SampleBase {
 		_light = new HemisphericLight("hemi", new Vector3(0, 1, 0), _scene);
 		_light.diffuse = Color3.FromInt(0xf68712);
 
-        
+        var sphere = Mesh.CreateSphere("sphere1", 16, 2, _scene);
+		sphere.material = new StandardMaterial("mat", _scene);
+		untyped sphere.material.diffuseColor = new Color3(0.3, 0.34, 0.87);
+		sphere.position.y = 1;
+
+
     }
 
     /**
@@ -126,12 +158,17 @@ class GUI extends SampleBase {
         _initialized = false;
 
     }
+
+    public override function onRender() {
+        super.onRender();
+        _rootComponent.sync(_scene.getEngine());
+        _rootComponent.drawRec(_scene.getEngine());
+    }
     
     //Perform our updates
     public override function onBeforeRender(scene:Scene, es:Null<EventState>) {
             
         var dt = scene.getEngine().getDeltaTime();
-        
         _elapsedTime += dt;
 
     }

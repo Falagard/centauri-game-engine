@@ -158,6 +158,12 @@ castle is a structured static database used as a way to read game data.
 
 `haxelib dev castle castle`
 
+haxeui-babylonhx is a gui library based on haxeui and integrated with babylonhx. We have two dependent libraries here. 
+
+`haxelib dev haxeui-babylonhx haxeui-babylonhx`
+
+`haxelib dev haxeui-core haxeui-core`
+
 tweenxcore a is a tweening library, which is used for juicy transitions. 
 
 The way tweenxcore is setup, we need to change into the tweenxcore directory before adding it to haxelib:

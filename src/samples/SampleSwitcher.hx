@@ -18,6 +18,7 @@ class SampleSwitcher {
         _scene = scene;
 
         _samples = new Array<SampleBase>();
+        _samples.push(new GUI(scene));
         _samples.push(new Turtle(scene));
         _samples.push(new Pathfinding(scene));
         _samples.push(new Tween(scene));
@@ -40,7 +41,7 @@ class SampleSwitcher {
             _elapsedTime += dt;
 
             //check for num samples up to 0 if the keys are down
-            //we'll have a better way to do this soon hopefully using 
+            //we'll have a better way to do this soon hopefully using a gui
             for(i in 0...9) {
                 if(_keysDown[Keycodes.key_1 + i] && !_keysDown[Keycodes.lshift] && !_keysHandled[Keycodes.key_1 + i]) {
                     if(i > _samples.length - 1) {
