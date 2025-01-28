@@ -22,3 +22,6 @@
 [submodule "haxeui-babylonhx"]
 	path = haxeui-babylonhx
 	url = https://github.com/Falagard/haxeui-babylonhx
+[submodule "haxeui-core"]
+	path = haxeui-core
+	url = https://github.com/Falagard/haxeui-core
