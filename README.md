@@ -70,7 +70,7 @@ haxelib is like a package manager for haxe, similar to Nuget, npm, pip, etc. tha
 
 If you get an error that says "Error: Failed with error: X509 - Certificate verification failed, e.g. CRL, CA or signature check failed" then run this line: 
 
-curl -sSLf https://lib.haxe.org/p/jQueryExtern/3.2.1/download/ -o /dev/null
+`curl -sSLf https://lib.haxe.org/p/jQueryExtern/3.2.1/download/ -o /dev/null`
 
 `haxelib install hxp`
 
